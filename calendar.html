@@ -22,7 +22,7 @@
             display: none;
         }
         html, body {
-            -ms-overflow-style: none; /* IE and Edge */
+            -ms-overflow-style: none;
             overflow-y: scroll;
         }
         html {
@@ -99,7 +99,7 @@
             background-color: #2d2d2d;
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            overflow: visible; /* <-- changed from hidden to visible */
+            overflow: visible;
             margin-bottom: 20px;
         }
         
@@ -114,7 +114,7 @@
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            overflow: visible; /* <-- add this */
+            overflow: visible;
         }
         
         .day-header {
@@ -266,7 +266,7 @@
             border: 1px solid #404040;
             border-radius: 4px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            z-index: 100; /* <-- increase z-index */
+            z-index: 100;
             padding: 5px 0;
             max-height: 200px;
             overflow-y: auto;
@@ -403,7 +403,6 @@
 <body>
     <div class="container">
         <h1>WWE Studios Movie Calendar</h1>
-        <img src="https://blog.logomyway.com/wp-content/uploads/2021/03/wwe-logo-png.png" alt="WWE Logo" class="logo">
         
         <div class="year-header">
             <div class="year-nav">
@@ -517,7 +516,7 @@
                     years.add(year);
                 });
                 
-                availableYears = Array.from(years).sort((a, b) => b - a); // Sort descending
+                availableYears = Array.from(years).sort((a, b) => b - a);
                 
                 // Set default year to current year if movies exist for it, otherwise latest year
                 if (years.has(new Date().getFullYear())) {
@@ -546,34 +545,27 @@
         }
         
         function renderYearCalendar() {
-            // Clear grid
             monthsGrid.innerHTML = '';
             
-            // Populate year dropdown
             populateYearDropdown();
             
-            // Filter movies for current year
             const currentYearMovies = allMovies.filter(movie => {
                 const releaseDate = new Date(movie.release_date);
                 return releaseDate.getFullYear() === displayYear;
             });
             
-            // Render each month
             for (let month = 0; month < 12; month++) {
                 const monthCalendar = document.createElement('div');
                 monthCalendar.className = 'month-calendar';
                 
-                // Month header
                 const monthHeader = document.createElement('div');
                 monthHeader.className = 'month-header';
                 monthHeader.textContent = new Date(displayYear, month, 1).toLocaleDateString('en-US', { month: 'long' });
                 monthCalendar.appendChild(monthHeader);
                 
-                // Calendar grid
                 const calendarGrid = document.createElement('div');
                 calendarGrid.className = 'calendar-grid';
                 
-                // Day headers
                 const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
                 dayNames.forEach(day => {
                     const dayHeader = document.createElement('div');
@@ -582,23 +574,19 @@
                     calendarGrid.appendChild(dayHeader);
                 });
                 
-                // Get first day of month and number of days
                 const firstDay = new Date(displayYear, month, 1).getDay();
                 const daysInMonth = new Date(displayYear, month + 1, 0).getDate();
                 
-                // Add empty cells for days before the 1st
                 for (let i = 0; i < firstDay; i++) {
                     const emptyCell = document.createElement('div');
                     emptyCell.className = 'day-cell other-month';
                     calendarGrid.appendChild(emptyCell);
                 }
                 
-                // Add days of the month
                 for (let day = 1; day <= daysInMonth; day++) {
                     const dayCell = document.createElement('div');
                     dayCell.className = 'day-cell';
                     
-                    // Check if this is today
                     const today = new Date();
                     if (today.getDate() === day && today.getMonth() === month && today.getFullYear() === displayYear) {
                         dayCell.classList.add('today');
@@ -609,7 +597,6 @@
                     dayNumber.textContent = day;
                     dayCell.appendChild(dayNumber);
                     
-                    // Find movies for this day
                     const moviesOnDay = currentYearMovies.filter(movie => {
                         const releaseDate = new Date(movie.release_date);
                         return releaseDate.getDate() === day && releaseDate.getMonth() === month;
@@ -618,13 +605,11 @@
                     if (moviesOnDay.length > 0) {
                         dayCell.classList.add('has-events');
                         
-                        // Add movie count
                         const movieCount = document.createElement('div');
                         movieCount.className = 'movie-count';
                         movieCount.textContent = moviesOnDay.length;
                         dayCell.appendChild(movieCount);
                         
-                        // Create movies list (hidden initially)
                         const moviesList = document.createElement('div');
                         moviesList.className = 'movies-list';
                         
@@ -642,11 +627,9 @@
                         
                         dayCell.appendChild(moviesList);
                         
-                        // Toggle movies list on click
                         dayCell.addEventListener('click', (event) => {
                             hideAllMoviesLists();
 
-                            // Temporarily show off-screen to measure
                             moviesList.style.display = 'block';
                             moviesList.style.visibility = 'hidden';
                             moviesList.style.left = '0';
@@ -654,30 +637,25 @@
                             moviesList.style.top = '100%';
                             moviesList.style.bottom = '';
 
-                            // Force reflow to get correct size
                             const rect = moviesList.getBoundingClientRect();
                             const parentRect = dayCell.getBoundingClientRect();
                             const viewportWidth = window.innerWidth;
                             const viewportHeight = window.innerHeight;
 
-                            // Default position: below and left-aligned
                             moviesList.style.left = '0';
                             moviesList.style.right = '';
                             moviesList.style.top = '100%';
                             moviesList.style.bottom = '';
 
-                            // If overflowing right, align right edge
                             if (parentRect.left + rect.width > viewportWidth) {
                                 moviesList.style.left = 'auto';
                                 moviesList.style.right = '0';
                             }
-                            // If overflowing bottom, show above the cell
                             if (parentRect.bottom + rect.height > viewportHeight) {
                                 moviesList.style.top = 'auto';
                                 moviesList.style.bottom = '100%';
                             }
 
-                            // Now make visible
                             moviesList.style.visibility = 'visible';
 
                             event.stopPropagation();
@@ -687,7 +665,6 @@
                     calendarGrid.appendChild(dayCell);
                 }
                 
-                // Add empty cells to complete the grid if needed
                 const totalCells = firstDay + daysInMonth;
                 const rowsNeeded = Math.ceil(totalCells / 7);
                 const totalCellsNeeded = rowsNeeded * 7;
@@ -702,14 +679,12 @@
                 monthsGrid.appendChild(monthCalendar);
             }
             
-            // Add event listener to document to hide movies lists when clicking outside
             document.addEventListener('click', (e) => {
                 if (!e.target.closest('.has-events')) {
                     hideAllMoviesLists();
                 }
             });
             
-            // Add keyboard navigation and highlight
             monthsGrid.querySelectorAll('.day-cell.has-events').forEach(cell => {
                 cell.tabIndex = 0;
                 cell.addEventListener('keydown', (e) => {
@@ -738,31 +713,24 @@
         
         async function showMovieDetails(movie) {
             try {
-                // Show backdrop and details container
                 backdrop.style.display = 'block';
                 movieDetails.style.display = 'block';
                 
-                // Set title
                 detailTitle.textContent = movie.title;
                 
-                // Show loading in content area
                 movieContent.innerHTML = '<div class="loading">Loading movie details...</div>';
                 
-                // Fetch detailed movie information
                 const response = await fetch(`https://api.themoviedb.org/3/movie/${movie.id}?api_key=${API_KEY}&append_to_response=credits,videos`);
                 const movieData = await response.json();
                 
-                // Create movie details HTML
                 let detailsHTML = '';
                 
-                // Add poster if available
                 if (movieData.poster_path) {
                     detailsHTML += `<img src="https://image.tmdb.org/t/p/w200${movieData.poster_path}" alt="${movieData.title} Poster" class="movie-poster">`;
                 } else {
                     detailsHTML += `<img src="/api/placeholder/150/225" alt="No Poster Available" class="movie-poster">`;
                 }
                 
-                // Add movie info
                 detailsHTML += `
                     <div class="movie-info">
                         <h3>${movieData.title} (${new Date(movieData.release_date).getFullYear()})</h3>
@@ -774,18 +742,15 @@
                     <p><strong>Overview:</strong> ${movieData.overview || 'No overview available.'}</p>
                 `;
                 
-                // Add genres
                 if (movieData.genres && movieData.genres.length > 0) {
                     detailsHTML += `<p><strong>Genres:</strong> ${movieData.genres.map(genre => genre.name).join(', ')}</p>`;
                 }
                 
-                // Add cast members (top 5)
                 if (movieData.credits && movieData.credits.cast && movieData.credits.cast.length > 0) {
                     const topCast = movieData.credits.cast.slice(0, 5);
                     detailsHTML += `<p><strong>Cast:</strong> ${topCast.map(person => person.name).join(', ')}</p>`;
                 }
                 
-                // Add trailer if available
                 if (movieData.videos && movieData.videos.results && movieData.videos.results.length > 0) {
                     const trailer = movieData.videos.results.find(video => video.type === 'Trailer') || movieData.videos.results[0];
                     detailsHTML += `
@@ -793,7 +758,6 @@
                     `;
                 }
                 
-                // Update content
                 movieContent.innerHTML = detailsHTML;
                 
             } catch (error) {
