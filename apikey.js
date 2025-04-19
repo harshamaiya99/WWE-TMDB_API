@@ -1,0 +1,1 @@
+window.WWE_API_KEY = 'e9097b137e5e9bacd6efb85111071284';
