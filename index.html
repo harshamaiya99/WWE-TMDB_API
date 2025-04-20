@@ -521,6 +521,7 @@
       <span class="material-symbols-outlined" id="themeIcon">dark_mode</span>
     </button>
   </div>
+  <div id="installDiagnostics" style="text-align:center;color:#f44336;font-size:13px;margin-bottom:10px;display:none;"></div>
   <div id="installMsg" style="text-align:center;color:#ffc107;font-size:14px;margin-bottom:10px;display:none;"></div>
   
   <div id="statusContainer"></div>
@@ -593,6 +594,7 @@
     const closeModalBtn = document.querySelector('.close-modal');
     const themeToggle = document.getElementById('themeToggle');
     const themeIcon = document.getElementById('themeIcon');
+    const installDiagnostics = document.getElementById('installDiagnostics');
     
     // Restore theme from localStorage
     if (localStorage.getItem('theme') === 'light') {
@@ -1025,6 +1027,34 @@
       installMsg.style.display = 'none';
     });
 
+    function showDiagnostics() {
+      let reasons = [];
+      if (!window.matchMedia('(display-mode: standalone)').matches) {
+        reasons.push("Not running in standalone mode.");
+      }
+      if (!('serviceWorker' in navigator)) {
+        reasons.push("Service workers not supported.");
+      }
+      if (!window.location.protocol.startsWith('https')) {
+        reasons.push("Site is not served over HTTPS.");
+      }
+      if (!('onbeforeinstallprompt' in window)) {
+        reasons.push("beforeinstallprompt event not supported.");
+      }
+      if (!navigator.userAgent.toLowerCase().includes('android')) {
+        reasons.push("Not on Android device.");
+      }
+      if (!navigator.userAgent.toLowerCase().includes('chrome')) {
+        reasons.push("Not using Chrome browser.");
+      }
+      if (reasons.length === 0) {
+        installDiagnostics.style.display = 'none';
+      } else {
+        installDiagnostics.innerHTML = "PWA install not available because:<br>" + reasons.map(r => "- " + r).join("<br>");
+        installDiagnostics.style.display = 'block';
+      }
+    }
+
     // Show a message if not installable after 5 seconds
     window.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
@@ -1032,6 +1062,7 @@
           installBtn.disabled = true;
           installMsg.textContent = "App install is not available. Make sure you're using Chrome on Android, served over HTTPS, and meet all PWA requirements.";
           installMsg.style.display = 'block';
+          showDiagnostics();
           console.warn('PWA install prompt not available.');
         }
       }, 5000);
