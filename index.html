@@ -106,16 +106,12 @@
       margin-left: 10px;
       padding: 0;
       box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-      /* Hide by default, show via JS */
-      display: none;
+      /* Always show, but disable if not available */
+      opacity: 1;
+      pointer-events: auto;
     }
-    .install-btn:hover, .install-btn:focus {
-      background: #3d5a80;
-      color: #ffe082;
-    }
-    .install-btn .material-symbols-outlined {
-      font-size: 28px;
-      line-height: 1;
+    .install-btn[disabled] {
+      opacity: 0.4;
       pointer-events: none;
     }
     .light-theme {
@@ -518,13 +514,14 @@
     <a href="calendar.html" id="calendarBtn" class="theme-toggle-btn" title="Go to Movie Calendar" style="margin-left:0;">
       <span class="material-symbols-outlined">calendar_month</span>
     </a>
-    <button id="pwaInstallBtn" class="install-btn" style="display:none;" title="Install App">
+    <button id="pwaInstallBtn" class="install-btn" title="Install App" disabled>
       <span class="material-symbols-outlined">download</span>
     </button>
     <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle light/dark theme">
       <span class="material-symbols-outlined" id="themeIcon">dark_mode</span>
     </button>
   </div>
+  <div id="installMsg" style="text-align:center;color:#ffc107;font-size:14px;margin-bottom:10px;display:none;"></div>
   
   <div id="statusContainer"></div>
   <div id="episodesContainer">
@@ -1000,12 +997,16 @@
     // PWA: Install prompt for Chrome on Android
     let deferredPrompt;
     const installBtn = document.getElementById('pwaInstallBtn');
-    installBtn.style.display = 'none';
+    const installMsg = document.getElementById('installMsg');
+    installBtn.disabled = true;
+    installMsg.style.display = 'none';
 
     window.addEventListener('beforeinstallprompt', (e) => {
+      console.log('beforeinstallprompt event fired');
       e.preventDefault();
       deferredPrompt = e;
-      installBtn.style.display = 'flex';
+      installBtn.disabled = false;
+      installMsg.style.display = 'none';
     });
 
     installBtn.addEventListener('click', async () => {
@@ -1013,24 +1014,28 @@
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
         if (outcome === 'accepted') {
-          installBtn.style.display = 'none';
+          installBtn.disabled = true;
         }
         deferredPrompt = null;
       }
     });
 
     window.addEventListener('appinstalled', () => {
-      installBtn.style.display = 'none';
+      installBtn.disabled = true;
+      installMsg.style.display = 'none';
     });
 
+    // Show a message if not installable after 5 seconds
     window.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         if (!deferredPrompt) {
-          installBtn.style.display = 'none';
+          installBtn.disabled = true;
+          installMsg.textContent = "App install is not available. Make sure you're using Chrome on Android, served over HTTPS, and meet all PWA requirements.";
+          installMsg.style.display = 'block';
+          console.warn('PWA install prompt not available.');
         }
-      }, 3000);
+      }, 5000);
     });
   </script>
 </body>
 </html>
-``` 
