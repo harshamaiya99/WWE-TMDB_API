@@ -460,6 +460,26 @@
     .watch-button:hover {
       background-color: #c0392b;
     }
+    .install-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      background: #ff4747;
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: 14px 28px;
+      font-size: 18px;
+      font-weight: bold;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+      cursor: pointer;
+      display: none;
+      transition: background 0.2s;
+    }
+    .install-btn:hover {
+      background: #c0392b;
+    }
   </style>
 </head>
 <body>
@@ -517,6 +537,8 @@
       </div>
     </div>
   </div>
+
+  <button id="pwaInstallBtn" class="install-btn">Install App</button>
 
   <script src="apikey.js"></script>
   <script>
@@ -958,15 +980,27 @@
       });
     }
 
-    // PWA: Install prompt
+    // PWA: Install prompt for Chrome on Android
     let deferredPrompt;
+    const installBtn = document.getElementById('pwaInstallBtn');
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      // Optionally, show a custom install button or UI here
-      // Example: showInstallButton();
+      installBtn.style.display = 'block';
     });
-    // Optionally, you can trigger deferredPrompt.prompt() on a user action
+    installBtn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          installBtn.style.display = 'none';
+        }
+        deferredPrompt = null;
+      }
+    });
+    window.addEventListener('appinstalled', () => {
+      installBtn.style.display = 'none';
+    });
   </script>
 </body>
 </html>
