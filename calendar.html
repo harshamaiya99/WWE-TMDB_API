@@ -161,25 +161,28 @@
             background-color: #4a2c2c;
             cursor: pointer;
         }
-        .raw-event {
-            background-color: #b71c1c !important; /* Red for RAW */
-        }
-        .smackdown-event {
-            background-color: #1565c0 !important; /* Blue for SmackDown */
-        }
-        .movie-event {
-            background-color: #1b5e20 !important; /* Green for WWE Movies */
-        }
-        /* Light theme overrides */
-        .light-theme .raw-event {
-            background-color: #b71c1c !important; /* Red for RAW */
-        }
-        .light-theme .smackdown-event {
-            background-color: #1565c0 !important; /* Blue for SmackDown */
-        }
-        .light-theme .movie-event {
-            background-color: #1b5e20 !important; /* Green for WWE Movies */
-        }
+       /* Dark theme (default) */
+.raw-event {
+    background-color: #d32f2f !important; /* Bright crimson red */
+}
+.smackdown-event {
+    background-color: #1e88e5 !important; /* Vivid medium blue */
+}
+.movie-event {
+    background-color: #43a047 !important; /* Lively green */
+}
+
+/* Light theme overrides */
+.light-theme .raw-event {
+    background-color: #d32f2f !important; /* Soft red */
+}
+.light-theme .smackdown-event {
+    background-color: #1e88e5 !important; /* Soft blue */
+}
+.light-theme .movie-event {
+    background-color: #43a047 !important; /* Soft green */
+}
+
         .has-events .day-number {
             font-weight: bold;
             color: #ffffff;
@@ -955,16 +958,16 @@
                 const hasSmackdown = cell.getAttribute('data-has-smackdown') === '1';
                 if (hasRaw && !hasSmackdown) {
                     cell.style.background = isLight
-                        ? 'linear-gradient(90deg, #b71c1c 50%, #1b5e20 50%)'
-                        : 'linear-gradient(90deg, #b71c1c 50%, #1b5e20 50%)';
+                        ? 'linear-gradient(90deg, #43a047 50%, #d32f2f 50%)'
+                        : 'linear-gradient(90deg, #43a047 50%, #d32f2f 50%)';
                 } else if (hasSmackdown && !hasRaw) {
                     cell.style.background = isLight
-                        ? 'linear-gradient(90deg, #1565c0 50%, #1b5e20 50%)'
-                        : 'linear-gradient(90deg, #1565c0 50%, #1b5e20 50%)';
+                        ? 'linear-gradient(90deg, #1e88e5 50%, #d32f2f 50%)'
+                        : 'linear-gradient(90deg, #1e88e5 50%, #d32f2f 50%)';
                 } else if (hasRaw && hasSmackdown) {
                     cell.style.background = isLight
-                        ? 'linear-gradient(90deg, #b71c1c 33.33%, #1565c0 33.33% 66.66%, #1b5e20 66.66%)'
-                        : 'linear-gradient(90deg, #b71c1c 33.33%, #1565c0 33.33% 66.66%, #1b5e20 66.66%)';
+                        ? 'linear-gradient(90deg, #43a047 33.33%, #1e88e5 33.33% 66.66%, #d32f2f 66.66%)'
+                        : 'linear-gradient(90deg, #43a047 33.33%, #1e88e5 33.33% 66.66%, #d32f2f 66.66%)';
                 }
             });
         }
