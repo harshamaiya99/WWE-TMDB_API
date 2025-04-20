@@ -787,7 +787,7 @@
           return episode.air_date && episode.air_date <= TODAY_STRING;
         });
         
-        showStatus(`Showing ${pastAndCurrentEpisodes.length} episodes (filtered out future episodes)`);
+        showStatus(`Showing ${pastAndCurrentEpisodes.length} episodes`);
         
         pastAndCurrentEpisodes.sort((a, b) => new Date(a.air_date) - new Date(b.air_date));
         
