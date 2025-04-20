@@ -522,6 +522,7 @@
     </button>
   </div>
   <div id="installDiagnostics" style="text-align:center;color:#f44336;font-size:13px;margin-bottom:10px;display:none;"></div>
+  <div id="installStatus" style="text-align:center;color:#2196f3;font-size:13px;margin-bottom:10px;display:none;"></div>
   <div id="installMsg" style="text-align:center;color:#ffc107;font-size:14px;margin-bottom:10px;display:none;"></div>
   
   <div id="statusContainer"></div>
@@ -595,6 +596,7 @@
     const themeToggle = document.getElementById('themeToggle');
     const themeIcon = document.getElementById('themeIcon');
     const installDiagnostics = document.getElementById('installDiagnostics');
+    const installStatus = document.getElementById('installStatus');
     
     // Restore theme from localStorage
     if (localStorage.getItem('theme') === 'light') {
@@ -1027,17 +1029,51 @@
       installMsg.style.display = 'none';
     });
 
-    function showDiagnostics() {
+    async function showDiagnostics() {
       let reasons = [];
-      if (!window.matchMedia('(display-mode: standalone)').matches) {
-        reasons.push("Not running in standalone mode.");
+      let status = [];
+
+      // Manifest check
+      try {
+        const manifestLink = document.querySelector('link[rel="manifest"]');
+        if (!manifestLink) {
+          reasons.push("No manifest link found in <head>.");
+        } else {
+          const resp = await fetch(manifestLink.href);
+          if (!resp.ok) {
+            reasons.push("Manifest file not found or not accessible.");
+          } else {
+            status.push("Manifest loaded successfully.");
+          }
+        }
+      } catch (e) {
+        reasons.push("Manifest fetch error: " + e.message);
       }
-      if (!('serviceWorker' in navigator)) {
+
+      // Service worker check
+      if ('serviceWorker' in navigator) {
+        try {
+          const regs = await navigator.serviceWorker.getRegistrations();
+          if (regs.length === 0) {
+            reasons.push("No service worker registered.");
+          } else {
+            status.push("Service worker registered.");
+          }
+        } catch (e) {
+          reasons.push("Service worker error: " + e.message);
+        }
+      } else {
         reasons.push("Service workers not supported.");
       }
+
+      // HTTPS check
       if (!window.location.protocol.startsWith('https')) {
         reasons.push("Site is not served over HTTPS.");
+      } else {
+        status.push("Site is served over HTTPS.");
       }
+
+      // Platform checks
       if (!('onbeforeinstallprompt' in window)) {
         reasons.push("beforeinstallprompt event not supported.");
       }
@@ -1047,12 +1083,23 @@
       if (!navigator.userAgent.toLowerCase().includes('chrome')) {
         reasons.push("Not using Chrome browser.");
       }
+
+      // Standalone mode check (for info only)
+      if (!window.matchMedia('(display-mode: standalone)').matches) {
+        status.push("Not running in standalone mode (expected before install).");
+      } else {
+        status.push("Running in standalone mode.");
+      }
+
+      // Show diagnostics
       if (reasons.length === 0) {
         installDiagnostics.style.display = 'none';
       } else {
         installDiagnostics.innerHTML = "PWA install not available because:<br>" + reasons.map(r => "- " + r).join("<br>");
         installDiagnostics.style.display = 'block';
       }
+      installStatus.innerHTML = status.join("<br>");
+      installStatus.style.display = 'block';
     }
 
     // Show a message if not installable after 5 seconds
