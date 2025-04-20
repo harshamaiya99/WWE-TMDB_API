@@ -494,6 +494,7 @@
             const isLight = document.body.classList.contains('light-theme');
             localStorage.setItem('theme', isLight ? 'light' : 'dark');
             themeIcon.textContent = isLight ? 'light_mode' : 'dark_mode';
+            updateSplitBackgroundsForTheme();
         });
         
         currentYearButton.addEventListener('click', () => {
@@ -679,18 +680,38 @@
                     });
 
                     // --- Add RAW/SmackDown/Movie background color ---
-                    if (moviesOnDay.length > 0) {
-                        dayCell.classList.add('movie-event');
-                    }
-                    if (episodesOnDay.length > 0) {
+                    // SPLIT background if both movie and episode exist
+                    if (moviesOnDay.length > 0 && episodesOnDay.length > 0) {
                         const hasRaw = episodesOnDay.some(ep => ep.showName === 'RAW');
                         const hasSmackdown = episodesOnDay.some(ep => ep.showName === 'SmackDown');
-                        if (hasRaw && hasSmackdown) {
-                            dayCell.classList.add('raw-event', 'smackdown-event');
-                        } else if (hasRaw) {
-                            dayCell.classList.add('raw-event');
-                        } else if (hasSmackdown) {
-                            dayCell.classList.add('smackdown-event');
+                        // Default: RAW+Movie = red/green, SmackDown+Movie = blue/green
+                        if (hasRaw && !hasSmackdown) {
+                            dayCell.style.background = 'linear-gradient(90deg, #b71c1c 50%, #1b5e20 50%)';
+                        } else if (hasSmackdown && !hasRaw) {
+                            dayCell.style.background = 'linear-gradient(90deg, #1565c0 50%, #1b5e20 50%)';
+                        } else if (hasRaw && hasSmackdown) {
+                            // RAW+SmackDown+Movie: 3-way split (red/blue/green)
+                            dayCell.style.background = 'linear-gradient(90deg, #b71c1c 33.33%, #1565c0 33.33% 66.66%, #1b5e20 66.66%)';
+                        }
+                        // For light theme, override in JS on theme change
+                        dayCell.setAttribute('data-split-bg', '1');
+                        dayCell.setAttribute('data-has-raw', hasRaw ? '1' : '0');
+                        dayCell.setAttribute('data-has-smackdown', hasSmackdown ? '1' : '0');
+                    } else {
+                        // Fallback to class-based coloring
+                        if (moviesOnDay.length > 0) {
+                            dayCell.classList.add('movie-event');
+                        }
+                        if (episodesOnDay.length > 0) {
+                            const hasRaw = episodesOnDay.some(ep => ep.showName === 'RAW');
+                            const hasSmackdown = episodesOnDay.some(ep => ep.showName === 'SmackDown');
+                            if (hasRaw && hasSmackdown) {
+                                dayCell.classList.add('raw-event', 'smackdown-event');
+                            } else if (hasRaw) {
+                                dayCell.classList.add('raw-event');
+                            } else if (hasSmackdown) {
+                                dayCell.classList.add('smackdown-event');
+                            }
                         }
                     }
                     // --- End RAW/SmackDown/Movie color ---
@@ -814,6 +835,8 @@
                     cell.classList.remove('highlighted-day');
                 });
             });
+
+            updateSplitBackgroundsForTheme();
         }
 
         function hideAllMoviesLists() {
@@ -911,6 +934,27 @@
         
         function showLoadingSpinner() {
             monthsGrid.innerHTML = '<div class="spinner"></div>';
+        }
+
+        function updateSplitBackgroundsForTheme() {
+            const isLight = document.body.classList.contains('light-theme');
+            document.querySelectorAll('.day-cell[data-split-bg="1"]').forEach(cell => {
+                const hasRaw = cell.getAttribute('data-has-raw') === '1';
+                const hasSmackdown = cell.getAttribute('data-has-smackdown') === '1';
+                if (hasRaw && !hasSmackdown) {
+                    cell.style.background = isLight
+                        ? 'linear-gradient(90deg, #b71c1c 50%, #1b5e20 50%)'
+                        : 'linear-gradient(90deg, #b71c1c 50%, #1b5e20 50%)';
+                } else if (hasSmackdown && !hasRaw) {
+                    cell.style.background = isLight
+                        ? 'linear-gradient(90deg, #1565c0 50%, #1b5e20 50%)'
+                        : 'linear-gradient(90deg, #1565c0 50%, #1b5e20 50%)';
+                } else if (hasRaw && hasSmackdown) {
+                    cell.style.background = isLight
+                        ? 'linear-gradient(90deg, #b71c1c 33.33%, #1565c0 33.33% 66.66%, #1b5e20 66.66%)'
+                        : 'linear-gradient(90deg, #b71c1c 33.33%, #1565c0 33.33% 66.66%, #1b5e20 66.66%)';
+                }
+            });
         }
         
         // Initialize
