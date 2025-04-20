@@ -735,7 +735,7 @@
       watchButton.onclick = () => {
         const episodeId = getEpisodeId(episode);
         saveWatchedEpisode(episodeId);
-        window.open(videoUrl, '_blank');
+        window.open(videoUrl, '_self'); // open in same tab
         highlightWatchedEpisode(episodeId);
       };
       
