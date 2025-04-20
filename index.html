@@ -50,6 +50,29 @@
       background: #121212;
       padding-top: 10px;
       padding-bottom: 10px;
+      flex-direction: row;
+      align-items: center;
+    }
+    .controls-selectors,
+    .controls-icons {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+    @media (max-width: 600px) {
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+      .controls-selectors,
+      .controls-icons {
+        width: 100%;
+        justify-content: center;
+      }
+      .controls-selectors {
+        margin-bottom: 8px;
+      }
     }
     .show-selection, .year-selection {
       padding: 10px 20px;
@@ -502,24 +525,27 @@
   </div>
   
   <div class="controls">
-    <select class="show-selection custom-select" id="showSelect">
-      <option value="both">Both Shows</option>
-      <option value="raw">RAW Only</option>
-      <option value="smackdown">SmackDown Only</option>
-    </select>
-    
-    <select class="year-selection custom-select" id="yearSelect">
-      <!-- Will be populated with JavaScript -->
-    </select>
-    <a href="calendar.html" id="calendarBtn" class="theme-toggle-btn" title="Go to Movie Calendar" style="margin-left:0;">
-      <span class="material-symbols-outlined">calendar_month</span>
-    </a>
-    <button id="pwaInstallBtn" class="install-btn" title="Install App" disabled>
-      <span class="material-symbols-outlined">download</span>
-    </button>
-    <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle light/dark theme">
-      <span class="material-symbols-outlined" id="themeIcon">dark_mode</span>
-    </button>
+    <div class="controls-selectors">
+      <select class="show-selection custom-select" id="showSelect">
+        <option value="both">Both Shows</option>
+        <option value="raw">RAW Only</option>
+        <option value="smackdown">SmackDown Only</option>
+      </select>
+      <select class="year-selection custom-select" id="yearSelect">
+        <!-- Will be populated with JavaScript -->
+      </select>
+    </div>
+    <div class="controls-icons">
+      <a href="calendar.html" id="calendarBtn" class="theme-toggle-btn" title="Go to Movie Calendar" style="margin-left:0;">
+        <span class="material-symbols-outlined">calendar_month</span>
+      </a>
+      <button id="pwaInstallBtn" class="install-btn" title="Install App" disabled>
+        <span class="material-symbols-outlined">download</span>
+      </button>
+      <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle light/dark theme">
+        <span class="material-symbols-outlined" id="themeIcon">dark_mode</span>
+      </button>
+    </div>
   </div>
   <div id="installDiagnostics" style="text-align:center;color:#f44336;font-size:13px;margin-bottom:10px;display:none;"></div>
   <div id="installStatus" style="text-align:center;color:#2196f3;font-size:13px;margin-bottom:10px;display:none;"></div>
