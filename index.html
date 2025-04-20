@@ -538,7 +538,7 @@
     </div>
   </div>
 
-  <button id="pwaInstallBtn" class="install-btn">Install App</button>
+  <button id="pwaInstallBtn" class="install-btn" style="display:none;">Install App</button>
 
   <script src="apikey.js"></script>
   <script>
@@ -983,11 +983,15 @@
     // PWA: Install prompt for Chrome on Android
     let deferredPrompt;
     const installBtn = document.getElementById('pwaInstallBtn');
+    // Hide button by default
+    installBtn.style.display = 'none';
+
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
       installBtn.style.display = 'block';
     });
+
     installBtn.addEventListener('click', async () => {
       if (deferredPrompt) {
         deferredPrompt.prompt();
@@ -998,8 +1002,18 @@
         deferredPrompt = null;
       }
     });
+
     window.addEventListener('appinstalled', () => {
       installBtn.style.display = 'none';
+    });
+
+    // Fallback: Hide button if prompt never fires (not eligible)
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        if (!deferredPrompt) {
+          installBtn.style.display = 'none';
+        }
+      }, 3000);
     });
   </script>
 </body>
