@@ -460,7 +460,7 @@
 
         // Global variables
         let allMovies = [];
-        let allEpisodes = []; // Will hold all episodes for the year
+        let allEpisodes = []; // Will hold all episodes for all years
         let availableYears = [];
         let displayYear = new Date().getFullYear();
         
@@ -529,11 +529,11 @@
                 }
                 allMovies = movies.filter(movie => movie.release_date);
 
-                // --- Fetch Episodes (RAW + SmackDown) ---
+                // --- Fetch Episodes (RAW + SmackDown) for ALL years ---
                 allEpisodes = [];
                 const [rawEpisodes, smackdownEpisodes] = await Promise.all([
-                    fetchEpisodesForShow(RAW_ID, 'RAW', RAW_IMDB_ID, displayYear),
-                    fetchEpisodesForShow(SMACKDOWN_ID, 'SmackDown', SMACKDOWN_IMDB_ID, displayYear)
+                    fetchAllEpisodesForShow(RAW_ID, 'RAW', RAW_IMDB_ID),
+                    fetchAllEpisodesForShow(SMACKDOWN_ID, 'SmackDown', SMACKDOWN_IMDB_ID)
                 ]);
                 allEpisodes = [...rawEpisodes, ...smackdownEpisodes];
 
@@ -564,8 +564,8 @@
             }
         }
 
-        async function fetchEpisodesForShow(showId, showName, imdbId, year) {
-            // Fetch show details to get number of seasons
+        // Fetch ALL episodes for a show (all seasons, all years)
+        async function fetchAllEpisodesForShow(showId, showName, imdbId) {
             const showResponse = await fetch(`https://api.themoviedb.org/3/tv/${showId}?api_key=${API_KEY}`);
             if (!showResponse.ok) return [];
             const showData = await showResponse.json();
@@ -578,18 +578,17 @@
                     );
                     if (!seasonResponse.ok) continue;
                     const seasonData = await seasonResponse.json();
-                    const episodesInYear = seasonData.episodes.filter(
-                        ep => ep.air_date && ep.air_date.startsWith(year)
-                    );
-                    episodesInYear.forEach(ep => {
-                        episodes.push({
-                            ...ep,
-                            showName,
-                            showId,
-                            imdbId,
-                            season_number: seasonNum,
-                            type: 'episode'
-                        });
+                    seasonData.episodes.forEach(ep => {
+                        if (ep.air_date) {
+                            episodes.push({
+                                ...ep,
+                                showName,
+                                showId,
+                                imdbId,
+                                season_number: seasonNum,
+                                type: 'episode'
+                            });
+                        }
                     });
                 } catch (err) {
                     // ignore
@@ -618,6 +617,7 @@
                 return releaseDate.getFullYear() === displayYear;
             });
 
+            // Now filter allEpisodes by displayYear
             const currentYearEpisodes = allEpisodes.filter(ep => {
                 const airDate = new Date(ep.air_date);
                 return airDate.getFullYear() === displayYear;
