@@ -153,7 +153,25 @@
             background-color: #4a2c2c;
             cursor: pointer;
         }
-        
+        .raw-event {
+            background-color: #b71c1c !important; /* Red for RAW */
+        }
+        .smackdown-event {
+            background-color: #1565c0 !important; /* Blue for SmackDown */
+        }
+        .movie-event {
+            background-color: #1b5e20 !important; /* Green for WWE Movies */
+        }
+        /* Light theme overrides */
+        .light-theme .raw-event {
+            background-color: #b71c1c !important; /* Red for RAW */
+        }
+        .light-theme .smackdown-event {
+            background-color: #1565c0 !important; /* Blue for SmackDown */
+        }
+        .light-theme .movie-event {
+            background-color: #1b5e20 !important; /* Green for WWE Movies */
+        }
         .has-events .day-number {
             font-weight: bold;
             color: #ffffff;
@@ -376,7 +394,7 @@
             background: #e3eafc;
             color: #1565c0;
         }
-        .light-theme #theme-toggle.theme-toggle-btn:hover, .light-theme #theme-toggle.theme-toggle-btn:focus {
+        .light-theme #theme-toggle.theme-toggle-btn:hover, #theme-toggle.theme-toggle-btn:focus {
             background: #bcd0ee;
             color: #222;
         }
@@ -659,6 +677,23 @@
                         const airDate = new Date(ep.air_date);
                         return airDate.getDate() === day && airDate.getMonth() === month;
                     });
+
+                    // --- Add RAW/SmackDown/Movie background color ---
+                    if (moviesOnDay.length > 0) {
+                        dayCell.classList.add('movie-event');
+                    }
+                    if (episodesOnDay.length > 0) {
+                        const hasRaw = episodesOnDay.some(ep => ep.showName === 'RAW');
+                        const hasSmackdown = episodesOnDay.some(ep => ep.showName === 'SmackDown');
+                        if (hasRaw && hasSmackdown) {
+                            dayCell.classList.add('raw-event', 'smackdown-event');
+                        } else if (hasRaw) {
+                            dayCell.classList.add('raw-event');
+                        } else if (hasSmackdown) {
+                            dayCell.classList.add('smackdown-event');
+                        }
+                    }
+                    // --- End RAW/SmackDown/Movie color ---
 
                     if (moviesOnDay.length > 0 || episodesOnDay.length > 0) {
                         dayCell.classList.add('has-events');
