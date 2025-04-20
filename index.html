@@ -90,6 +90,34 @@
       line-height: 1;
       pointer-events: none;
     }
+    .install-btn {
+      background: #2c3e50;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      margin-left: 10px;
+      padding: 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+      /* Hide by default, show via JS */
+      display: none;
+    }
+    .install-btn:hover, .install-btn:focus {
+      background: #3d5a80;
+      color: #ffe082;
+    }
+    .install-btn .material-symbols-outlined {
+      font-size: 28px;
+      line-height: 1;
+      pointer-events: none;
+    }
     .light-theme {
       background-color: #f5f5f5;
       color: #222;
@@ -121,6 +149,14 @@
       color: #1565c0;
     }
     .light-theme .theme-toggle-btn:hover, .light-theme .theme-toggle-btn:focus {
+      background: #bcd0ee;
+      color: #222;
+    }
+    .light-theme .install-btn {
+      background: #e3eafc;
+      color: #1565c0;
+    }
+    .light-theme .install-btn:hover, .light-theme .install-btn:focus {
       background: #bcd0ee;
       color: #222;
     }
@@ -460,26 +496,6 @@
     .watch-button:hover {
       background-color: #c0392b;
     }
-    .install-btn {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 9999;
-      background: #ff4747;
-      color: #fff;
-      border: none;
-      border-radius: 50px;
-      padding: 14px 28px;
-      font-size: 18px;
-      font-weight: bold;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
-      cursor: pointer;
-      display: none;
-      transition: background 0.2s;
-    }
-    .install-btn:hover {
-      background: #c0392b;
-    }
   </style>
 </head>
 <body>
@@ -502,6 +518,9 @@
     <a href="calendar.html" id="calendarBtn" class="theme-toggle-btn" title="Go to Movie Calendar" style="margin-left:0;">
       <span class="material-symbols-outlined">calendar_month</span>
     </a>
+    <button id="pwaInstallBtn" class="install-btn" style="display:none;" title="Install App">
+      <span class="material-symbols-outlined">download</span>
+    </button>
     <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle light/dark theme">
       <span class="material-symbols-outlined" id="themeIcon">dark_mode</span>
     </button>
@@ -537,8 +556,6 @@
       </div>
     </div>
   </div>
-
-  <button id="pwaInstallBtn" class="install-btn" style="display:none;">Install App</button>
 
   <script src="apikey.js"></script>
   <script>
@@ -983,13 +1000,12 @@
     // PWA: Install prompt for Chrome on Android
     let deferredPrompt;
     const installBtn = document.getElementById('pwaInstallBtn');
-    // Hide button by default
     installBtn.style.display = 'none';
 
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      installBtn.style.display = 'block';
+      installBtn.style.display = 'flex';
     });
 
     installBtn.addEventListener('click', async () => {
@@ -1007,7 +1023,6 @@
       installBtn.style.display = 'none';
     });
 
-    // Fallback: Hide button if prompt never fires (not eligible)
     window.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         if (!deferredPrompt) {
@@ -1018,3 +1033,4 @@
   </script>
 </body>
 </html>
+``` 
