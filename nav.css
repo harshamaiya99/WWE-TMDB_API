@@ -76,10 +76,12 @@ html,body{height:100%;}
 .top-nav .nav-logo{height:36px;display:block}
 .top-nav .nav-right{margin-left:auto;display:flex;gap:12px;align-items:center}
 
-/* subtle visible scrollbar */
-::-webkit-scrollbar{width:10px;height:10px}
-::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.06);border-radius:8px}
-::-webkit-scrollbar-track{background:transparent}
+/* Hide scrollbars globally while preserving scrolling (WebKit/Blink, Firefox, IE/Edge) */
+::-webkit-scrollbar { width: 0; height: 0; }
+/* IE, Edge */
+* { -ms-overflow-style: none; }
+/* Firefox */
+* { scrollbar-width: none; }
 
 /* light-theme overrides for nav controls (shared) */
 .light-theme .theme-toggle-btn {

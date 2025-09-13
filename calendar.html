@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   
     <link rel="stylesheet" href="nav.css">
+    <link rel="stylesheet" href="style.css">
+
     <style>
         body {
             font-family: "Google Sans Text", sans-serif;
@@ -18,11 +20,13 @@
             background-color: #1a1a1a;
             color: #e0e0e0;
         }
-        /* subtle visible scrollbar for parity with index */
-        ::-webkit-scrollbar{width:10px;height:10px}
-        ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.06);border-radius:8px}
-        ::-webkit-scrollbar-track{background:transparent}
-        html, body { overflow-y: auto; }
+    /* Hide scrollbars globally while preserving scrolling (WebKit/Blink, Firefox, IE/Edge) */
+    ::-webkit-scrollbar { width: 0; height: 0; }
+    /* IE, Edge */
+    * { -ms-overflow-style: none; }
+    /* Firefox */
+    * { scrollbar-width: none; }
+    html, body { overflow-y: auto; }
         
         :root{--bg:#121212;--card:#2c2c2c;--muted:#aaa;--accent:#ff4747;--accent-2:#2196f3}
         html,body{height:100%;}
@@ -76,11 +80,6 @@
         }
         .year-nav select::-webkit-scrollbar {
             display: none;
-        }
-        
-        .current-year {
-            font-size: 24px;
-            margin: 0 15px;
         }
         
         .months-grid {
@@ -424,7 +423,6 @@
                 </select>
                 
                 <select id="yearSelect" class="year-selection custom-select" aria-label="Year selection"></select>
-                <button id="current-year-btn" class="custom-btn">Current Year</button>
                 <button id="pwaInstallBtn" class="install-btn" title="Install App" disabled aria-hidden="true">
                     <span class="material-symbols-outlined">download</span>
                 </button>
@@ -473,7 +471,6 @@
     const yearDropdown = document.getElementById('yearSelect') || document.getElementById('year-dropdown');
     const themeToggle = document.getElementById('themeToggle');
     const themeIcon = document.getElementById('themeIcon');
-    const currentYearButton = document.getElementById('current-year-btn');
         const movieDetails = document.getElementById('movie-details');
         const backdrop = document.getElementById('backdrop');
         const closeDetailButton = document.getElementById('close-detail');
@@ -531,10 +528,7 @@
             }
         });
         
-        currentYearButton.addEventListener('click', () => {
-            displayYear = new Date().getFullYear();
-            renderYearCalendar();
-        });
+    // Current year button removed per request
         
         closeDetailButton.addEventListener('click', closeMovieDetails);
         backdrop.addEventListener('click', closeMovieDetails);

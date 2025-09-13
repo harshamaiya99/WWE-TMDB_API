@@ -10,8 +10,9 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#121212">
-  
+
   <link rel="stylesheet" href="nav.css">
+  <link rel="stylesheet" href="style.css">
   <style>
     :root{--bg:#121212;--card:#2c2c2c;--muted:#aaa;--accent:#ff4747;--accent-2:#2196f3}
     html,body{height:100%;}
@@ -25,10 +26,12 @@
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
     }
-    /* Keep visible scrollbars for accessibility but make them subtle */
-    ::-webkit-scrollbar{width:10px;height:10px}
-    ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.06);border-radius:8px}
-    ::-webkit-scrollbar-track{background:transparent}
+  /* Hide scrollbars globally while preserving scrolling (WebKit/Blink, Firefox, IE/Edge) */
+  ::-webkit-scrollbar { width: 0; height: 0; }
+  /* IE, Edge */
+  * { -ms-overflow-style: none; }
+  /* Firefox */
+  * { scrollbar-width: none; }
     h1 {
       text-align: center;
       color: #ff4747;
