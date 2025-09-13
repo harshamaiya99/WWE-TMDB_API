@@ -1,961 +1,949 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WWE Raw and SmackDown Episodes</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Text:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#121212">
-
-  <link rel="stylesheet" href="nav.css">
-  <link rel="stylesheet" href="style.css">
-  <style>
-    :root{--bg:#121212;--card:#2c2c2c;--muted:#aaa;--accent:#ff4747;--accent-2:#2196f3}
-    html,body{height:100%;}
-    body {
-      font-family: "Google Sans Text", sans-serif;
-      max-width: 100%;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: var(--bg);
-      color: #e0e0e0;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-    }
-  /* Hide scrollbars globally while preserving scrolling (WebKit/Blink, Firefox, IE/Edge) */
-  ::-webkit-scrollbar { width: 0; height: 0; }
-  /* IE, Edge */
-  * { -ms-overflow-style: none; }
-  /* Firefox */
-  * { scrollbar-width: none; }
-    h1 {
-      text-align: center;
-      color: #ff4747;
-      margin-bottom: 30px;
-    }
-  /* nav styles loaded from nav.css */
-    .light-theme {
-      background-color: #f5f5f5;
-      color: #222;
-    }
-    
-    .light-theme .month-container,
-    .light-theme .modal-content {
-      background-color: #fff;
-      color: #222;
-    }
-    .light-theme .episode-card {
-      background-color: #f9f9f9;
-      border-color: #ddd;
-    }
-    .light-theme .episode-title,
-    .light-theme .episode-date,
-    .light-theme .episode-description {
-      color: #222;
-    }
-    .light-theme .info-banner {
-      background-color: #e3eafc;
-      color: #1565c0;
-      border-left: 4px solid #2196f3;
-    }
-  /* light-theme nav overrides moved to nav.css */
-  .spinner {
-      border: 4px solid #444;
-      border-top: 4px solid #ff4747;
-      border-radius: 50%;
-      width: 36px;
-      height: 36px;
-      animation: spin 1s linear infinite;
-      margin: 40px auto;
-      display: block;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg);}
-      100% { transform: rotate(360deg);}
-    }
-    .month-container {
-      margin-bottom: 30px;
-      background-color: #1e1e1e;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      overflow: hidden;
-    }
-  /* nav utilities (moved to nav.css) */
-    .month-header {
-      background-color: #2c3e50;
-      color: white;
-      padding: 12px 20px;
-      font-size: 18px;
-      font-weight: bold;
-    }
-    .episodes-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 16px;
-      padding: 20px;
-    }
-    .episode-card {
-      border: 1px solid #444;
-      border-radius: 6px;
-      overflow: hidden;
-      transition: transform 0.2s;
-      cursor: pointer;
-      background-color: #2c2c2c;
-      display: flex;
-      flex-direction: column;
-    }
-    .episode-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-    }
-    .watched {
-      border: 2px solid #00bce6;
-      background-color: rgba(0, 184, 230, 0.1);
-    }
-    .episode-image {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
-      background-color: #333;
-      display: block;
-    }
-    .episode-details {
-      padding: 12px;
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-    }
-    .episode-title {
-      font-weight: bold;
-      margin-bottom: 8px;
-      color: #e0e0e0;
-    }
-    .episode-date {
-      color: #aaa;
-      margin-bottom: 8px;
-      font-size: 14px;
-    }
-    .episode-description {
-      margin: 8px 0;
-      font-size: 14px;
-      color: #ccc;
-      flex-grow: 1;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .episode-footer {
-      margin-top: auto;
-    }
-    .episode-number {
-      background-color: #e74c3c;
-      color: white;
-      padding: 3px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      display: inline-block;
-    }
-    .episode-rating {
-      background-color: #f39c12;
-      color: white;
-      padding: 3px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      display: inline-block;
-      margin-left: 5px;
-    }
-    .show-tag {
-      padding: 3px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      margin-right: 5px;
-      display: inline-block;
-    }
-    .raw-tag {
-      background-color: #d32f2f;
-      color: white;
-    }
-    .smackdown-tag {
-      background-color: #1565c0;
-      color: white;
-    }
-    .loading {
-      text-align: center;
-      padding: 40px;
-      font-size: 18px;
-      color: #aaa;
-    }
-    .no-episodes {
-      text-align: center;
-      padding: 30px;
-      color: #aaa;
-      font-style: italic;
-    }
-    .status-message {
-      background-color: #332d00;
-      padding: 10px 15px;
-      margin-bottom: 20px;
-      border-left: 4px solid #ffc107;
-      border-radius: 4px;
-      color: #ffe082;
-    }
-    .error-message {
-      background-color: #410001;
-      padding: 10px 15px;
-      margin-bottom: 20px;
-      border-left: 4px solid #f44336;
-      border-radius: 4px;
-      color: #ffcdd2;
-    }
-    .info-banner {
-      background-color: #002041;
-      padding: 10px 15px;
-      margin-bottom: 20px;
-      border-left: 4px solid #2196f3;
-      border-radius: 4px;
-      text-align: center;
-      color: #bbdefb;
-    }
-    .play-button {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: rgba(0, 0, 0, 0.7);
-      color: white;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0.8;
-      transition: opacity 0.3s;
-    }
-    .episode-image-container {
-      position: relative;
-    }
-    .episode-card:hover .play-button {
-      opacity: 1;
-    }
-    .play-button::after {
-      content: '';
-      display: block;
-      width: 0;
-      height: 0;
-      border-top: 15px solid transparent;
-      border-bottom: 15px solid transparent;
-      border-left: 22px solid white;
-      margin-left: 5px;
-    }
-    select {
-      -moz-appearance: none;
-      -webkit-appearance: none;
-      appearance: none;
-      background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-      padding-right: 40px;
-    }
-  /* custom-select and nav-specific styles moved to nav.css */
-    
-    .episode-modal {
-      display: none;
-      position: fixed;
-      z-index: 100;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
-      overflow: auto;
-    }
-    .modal-content {
-      background-color: #2c2c2c;
-      margin: 5% auto;
-      padding: 20px;
-      border-radius: 8px;
-      width: 80%;
-      max-width: 800px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-    }
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-    .modal-title {
-      font-size: 22px;
-      color: #e0e0e0;
-      margin: 0;
-    }
-    .close-modal {
-      color: #aaa;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .close-modal:hover {
-      color: #fff;
-    }
-    .modal-body {
-      margin-bottom: 20px;
-    }
-    .modal-full-description {
-      line-height: 1.6;
-      margin-bottom: 20px;
-    }
-    .modal-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-    .modal-rating {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      margin-top: 10px;
-    }
-    .star-rating {
-      color: #f39c12;
-      font-size: 20px;
-      margin-right: 5px;
-    }
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 20px;
-    }
-    .watch-button {
-      background-color: #e74c3c;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 4px;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .watch-button:hover {
-      background-color: #c0392b;
-    }
-  /* make important interactive elements obvious on focus */
-  .episode-card:focus {box-shadow:0 6px 18px rgba(0,0,0,0.45);transform:translateY(-3px)}
-  .episode-card{outline:none}
-  </style>
-</head>
-<body>
-  <h1>WWE Raw and SmackDown Episodes</h1>
-
-  <!-- Shared top navigation (Home/Calendar, show filter, year, theme, install) -->
-  <nav class="controls top-nav" role="navigation" aria-label="Primary">
-    <div class="nav-left">
-      <a href="index.html" aria-label="Home" title="Home"><img src="WWE_Logo.svg" alt="WWE" class="nav-logo"></a>
-      <a href="calendar.html" id="calendarBtn" class="theme-toggle-btn" title="Open Calendar" aria-label="Open calendar">
-        <span class="material-symbols-outlined">calendar_month</span>
-      </a>
-    </div>
-
-    <div class="controls-selectors nav-right">
-      <select class="show-selection custom-select" id="showSelect" aria-label="Show filter">
-        <option value="both">Both Shows</option>
-        <option value="raw">RAW Only</option>
-        <option value="smackdown">SmackDown Only</option>
-      </select>
-
-      <select class="year-selection custom-select" id="yearSelect" aria-label="Year selection">
-        <!-- Will be populated with JavaScript -->
-      </select>
-
-      <button id="pwaInstallBtn" class="install-btn" title="Install App" disabled aria-hidden="true">
-        <span class="material-symbols-outlined">download</span>
-      </button>
-      <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle light/dark theme">
-        <span class="material-symbols-outlined" id="themeIcon">dark_mode</span>
-      </button>
-    </div>
-  </nav>
-
-  <div class="info-banner" role="status" aria-live="polite">
-    Showing episodes aired on or before today's date: <span id="currentDate"></span>
-  </div>
-  <div id="installDiagnostics" class="install-feedback" aria-hidden="true"></div>
-  <div id="installStatus" class="install-feedback" aria-hidden="true"></div>
-  <div id="installMsg" class="install-feedback" aria-hidden="true"></div>
-  
-  <div id="statusContainer"></div>
-  <div id="episodesContainer">
-    <div class="loading">Loading episodes...</div>
-  </div>
-
-  <!-- Episode Detail Modal -->
-  <div id="episodeModal" class="episode-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
-    <div class="modal-content" tabindex="-1">
-      <div class="modal-header">
-        <h2 class="modal-title" id="modalTitle">Episode Title</h2>
-        <button class="close-modal" aria-label="Close episode details">×</button>
-      </div>
-      <div class="modal-body">
-        <div class="modal-meta" id="modalMeta">
-          <!-- Meta info will be inserted here -->
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>WWE Raw and SmackDown Episodes</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Text:wght@400;500;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+        
+        <link rel="stylesheet" href="nav.css">
+        <link rel="stylesheet" href="style.css">
+        <style>
+            :root{--bg:#121212;--card:#2c2c2c;--muted:#aaa;--accent:#ff4747;--accent-2:#2196f3}
+            html,body{height:100%;}
+            body {
+            font-family: "Google Sans Text", sans-serif;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--bg);
+            color: #e0e0e0;
+            -webkit-font-smoothing:antialiased;
+            -moz-osx-font-smoothing:grayscale;
+            }
+            /* Hide scrollbars globally while preserving scrolling (WebKit/Blink, Firefox, IE/Edge) */
+            ::-webkit-scrollbar { width: 0; height: 0; }
+            /* IE, Edge */
+            * { -ms-overflow-style: none; }
+            /* Firefox */
+            * { scrollbar-width: none; }
+            h1 {
+            text-align: center;
+            color: #ff4747;
+            margin-bottom: 30px;
+            }
+            /* nav styles loaded from nav.css */
+            .light-theme {
+            background-color: #f5f5f5;
+            color: #222;
+            }
+            .light-theme .month-container,
+            .light-theme .modal-content {
+            background-color: #fff;
+            color: #222;
+            }
+            .light-theme .episode-card {
+            background-color: #f9f9f9;
+            border-color: #ddd;
+            }
+            .light-theme .episode-title,
+            .light-theme .episode-date,
+            .light-theme .episode-description {
+            color: #222;
+            }
+            .light-theme .info-banner {
+            background-color: #e3eafc;
+            color: #1565c0;
+            border-left: 4px solid #2196f3;
+            }
+            /* light-theme nav overrides moved to nav.css */
+            .spinner {
+            border: 4px solid #444;
+            border-top: 4px solid #ff4747;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            animation: spin 1s linear infinite;
+            margin: 40px auto;
+            display: block;
+            }
+            @keyframes spin {
+            0% { transform: rotate(0deg);}
+            100% { transform: rotate(360deg);}
+            }
+            .month-container {
+            margin-bottom: 30px;
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            overflow: hidden;
+            }
+            /* nav utilities (moved to nav.css) */
+            .month-header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 12px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            }
+            .episodes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 16px;
+            padding: 20px;
+            }
+            .episode-card {
+            border: 1px solid #444;
+            border-radius: 6px;
+            overflow: hidden;
+            transition: transform 0.2s;
+            cursor: pointer;
+            background-color: #2c2c2c;
+            display: flex;
+            flex-direction: column;
+            }
+            .episode-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+            }
+            .watched {
+            border: 2px solid #00bce6;
+            background-color: rgba(0, 184, 230, 0.1);
+            }
+            .episode-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            background-color: #333;
+            display: block;
+            }
+            .episode-details {
+            padding: 12px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            }
+            .episode-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #e0e0e0;
+            }
+            .episode-date {
+            color: #aaa;
+            margin-bottom: 8px;
+            font-size: 14px;
+            }
+            .episode-description {
+            margin: 8px 0;
+            font-size: 14px;
+            color: #ccc;
+            flex-grow: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            }
+            .episode-footer {
+            margin-top: auto;
+            }
+            .episode-number {
+            background-color: #e74c3c;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            display: inline-block;
+            }
+            .episode-rating {
+            background-color: #f39c12;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            display: inline-block;
+            margin-left: 5px;
+            }
+            .show-tag {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-right: 5px;
+            display: inline-block;
+            }
+            .raw-tag {
+            background-color: #d32f2f;
+            color: white;
+            }
+            .smackdown-tag {
+            background-color: #1565c0;
+            color: white;
+            }
+            .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 18px;
+            color: #aaa;
+            }
+            .no-episodes {
+            text-align: center;
+            padding: 30px;
+            color: #aaa;
+            font-style: italic;
+            }
+            .status-message {
+            background-color: #332d00;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffc107;
+            border-radius: 4px;
+            color: #ffe082;
+            }
+            .error-message {
+            background-color: #410001;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #f44336;
+            border-radius: 4px;
+            color: #ffcdd2;
+            }
+            .info-banner {
+            background-color: #002041;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+            border-radius: 4px;
+            text-align: center;
+            color: #bbdefb;
+            }
+            .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+            }
+            .episode-image-container {
+            position: relative;
+            }
+            .episode-card:hover .play-button {
+            opacity: 1;
+            }
+            .play-button::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 0;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            border-left: 22px solid white;
+            margin-left: 5px;
+            }
+            select {
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 40px;
+            }
+            /* custom-select and nav-specific styles moved to nav.css */
+            .episode-modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            overflow: auto;
+            }
+            .modal-content {
+            background-color: #2c2c2c;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 800px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            }
+            .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            }
+            .modal-title {
+            font-size: 22px;
+            color: #e0e0e0;
+            margin: 0;
+            }
+            .close-modal {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            }
+            .close-modal:hover {
+            color: #fff;
+            }
+            .modal-body {
+            margin-bottom: 20px;
+            }
+            .modal-full-description {
+            line-height: 1.6;
+            margin-bottom: 20px;
+            }
+            .modal-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+            }
+            .modal-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+            }
+            .star-rating {
+            color: #f39c12;
+            font-size: 20px;
+            margin-right: 5px;
+            }
+            .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+            }
+            .watch-button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            }
+            .watch-button:hover {
+            background-color: #c0392b;
+            }
+            /* make important interactive elements obvious on focus */
+            .episode-card:focus {box-shadow:0 6px 18px rgba(0,0,0,0.45);transform:translateY(-3px)}
+            .episode-card{outline:none}
+        </style>
+    </head>
+    <body>
+        <h1>WWE Raw and SmackDown Episodes</h1>
+        <!-- Shared top navigation (Home/Calendar, show filter, year, theme, install) -->
+        <nav class="controls top-nav" role="navigation" aria-label="Primary">
+            <div class="nav-left">
+                <a href="index.html" aria-label="Home" title="Home"><img src="WWE_Logo.svg" alt="WWE" class="nav-logo"></a>
+                <a href="calendar.html" id="calendarBtn" class="theme-toggle-btn" title="Open Calendar" aria-label="Open calendar">
+                <span class="material-symbols-outlined">calendar_month</span>
+                </a>
+            </div>
+            <div class="controls-selectors nav-right">
+                <select class="show-selection custom-select" id="showSelect" aria-label="Show filter">
+                    <option value="both">Both Shows</option>
+                    <option value="raw">RAW Only</option>
+                    <option value="smackdown">SmackDown Only</option>
+                </select>
+                <select class="year-selection custom-select" id="yearSelect" aria-label="Year selection">
+                    <!-- Will be populated with JavaScript -->
+                </select>
+                <button id="pwaInstallBtn" class="install-btn" title="Install App" disabled aria-hidden="true">
+                <span class="material-symbols-outlined">download</span>
+                </button>
+                <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle light/dark theme">
+                <span class="material-symbols-outlined" id="themeIcon">dark_mode</span>
+                </button>
+            </div>
+        </nav>
+        <div class="info-banner" role="status" aria-live="polite">
+            Showing episodes aired on or before today's date: <span id="currentDate"></span>
         </div>
-        <div class="modal-rating" id="modalRating">
-          <!-- Rating will be inserted here -->
+        <div id="installDiagnostics" class="install-feedback" aria-hidden="true"></div>
+        <div id="installStatus" class="install-feedback" aria-hidden="true"></div>
+        <div id="installMsg" class="install-feedback" aria-hidden="true"></div>
+        <div id="statusContainer"></div>
+        <div id="episodesContainer">
+            <div class="loading">Loading episodes...</div>
         </div>
-        <div class="modal-full-description" id="modalDescription">
-          <!-- Full description will be inserted here -->
+        <!-- Episode Detail Modal -->
+        <div id="episodeModal" class="episode-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
+            <div class="modal-content" tabindex="-1">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="modalTitle">Episode Title</h2>
+                    <button class="close-modal" aria-label="Close episode details">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-meta" id="modalMeta">
+                        <!-- Meta info will be inserted here -->
+                    </div>
+                    <div class="modal-rating" id="modalRating">
+                        <!-- Rating will be inserted here -->
+                    </div>
+                    <div class="modal-full-description" id="modalDescription">
+                        <!-- Full description will be inserted here -->
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="watch-button" id="watchButton">
+                    Watch Episode
+                    </button>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="modal-actions">
-        <button class="watch-button" id="watchButton">
-          Watch Episode
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <script src="apikey.js"></script>
-  <script src="nav.js"></script>
-  <script>
-    // Constants
-    const API_KEY = window.WWE_API_KEY;
-    const RAW_ID = 4656;
-    const SMACKDOWN_ID = 1549;
-    
-    const RAW_IMDB_ID = 'tt0185103';
-    const SMACKDOWN_IMDB_ID = 'tt0227972';
-    
-    const MONTHS = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
-    ];
-    
-    const TODAY = new Date();
-    const TODAY_STRING = TODAY.toISOString().split('T')[0];
-    
-    document.getElementById('currentDate').textContent = TODAY.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-    
-    // DOM elements
-    const container = document.getElementById('episodesContainer');
-    const statusContainer = document.getElementById('statusContainer');
-    const showSelect = document.getElementById('showSelect');
-    const yearSelect = document.getElementById('yearSelect');
-    const modal = document.getElementById('episodeModal');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalMeta = document.getElementById('modalMeta');
-    const modalRating = document.getElementById('modalRating');
-    const modalDescription = document.getElementById('modalDescription');
-  const watchButton = document.getElementById('watchButton');
-  const closeModalBtn = document.querySelector('.close-modal');
-  const themeToggle = document.getElementById('themeToggle');
-  const themeIcon = document.getElementById('themeIcon');
-  const installDiagnostics = document.getElementById('installDiagnostics');
-  const installStatus = document.getElementById('installStatus');
-    
-    // Populate years
-    const currentYear = TODAY.getFullYear();
-    const startYear = 1993;
-    
-    for (let year = currentYear; year >= startYear; year--) {
-      const option = document.createElement('option');
-      option.value = year;
-      option.textContent = year;
-      yearSelect.appendChild(option);
-    }
-    
-    yearSelect.value = currentYear;
-  // Load persisted selection if present
-  const persistedShow = localStorage.getItem('wwe_show') || null;
-  const persistedYear = localStorage.getItem('wwe_year') || null;
-  if (persistedShow) showSelect.value = persistedShow;
-  if (persistedYear) yearSelect.value = persistedYear;
-    
-    showSelect.addEventListener('change', fetchAndDisplayEpisodes);
-    yearSelect.addEventListener('change', fetchAndDisplayEpisodes);
-
-  // Persist selection to localStorage so calendar page can read it
-  showSelect.addEventListener('change', () => localStorage.setItem('wwe_show', showSelect.value));
-  yearSelect.addEventListener('change', () => localStorage.setItem('wwe_year', yearSelect.value));
-
-    // Listen for storage events to stay in sync when user changes selection on another tab/page
-    window.addEventListener('storage', (e) => {
-      if (e.key === 'wwe_show' && e.newValue) {
-        showSelect.value = e.newValue;
-        fetchAndDisplayEpisodes();
-      }
-      if (e.key === 'wwe_year' && e.newValue) {
-        yearSelect.value = e.newValue;
-        fetchAndDisplayEpisodes();
-      }
-    });
-    
-    closeModalBtn.addEventListener('click', closeModal);
-
-    function closeModal(){
-      modal.style.display = 'none';
-      modal.setAttribute('aria-hidden','true');
-      // return focus to the showSelect for context
-      showSelect.focus();
-    }
-    
-    window.addEventListener('click', (event) => {
-      if (event.target === modal) {
-        closeModal();
-      }
-    });
-
-    // Keyboard: ESC to close modal
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && modal.style.display === 'block') {
-        closeModal();
-      }
-    });
-    
-    // Function to get the unique episode ID
-    function getEpisodeId(episode) {
-      return `${episode.showId}-S${episode.season_number}-E${episode.episode_number}`;
-    }
-    
-    // Function to load the last watched episode from localStorage
-    function loadWatchedEpisode() {
-      return localStorage.getItem('lastWatchedEpisode');
-    }
-    
-    // Function to save the last watched episode to localStorage
-    function saveWatchedEpisode(episodeId) {
-      localStorage.setItem('lastWatchedEpisode', episodeId);
-    }
-    
-    // Function to highlight the watched episode
-    function highlightWatchedEpisode(episodeId) {
-      document.querySelectorAll('.episode-card.watched').forEach(card => {
-        card.classList.remove('watched');
-      });
-      const card = document.querySelector(`.episode-card[data-episode-id="${episodeId}"]`);
-      if (card) {
-        card.classList.add('watched');
-      }
-    }
-    
-    // Function to show episode details in modal
-    function showEpisodeDetails(episode) {
-      modalTitle.textContent = episode.name || 'Untitled Episode';
-      
-      let formattedDate = 'Air date unknown';
-      if (episode.air_date) {
-        const date = new Date(episode.air_date);
-        formattedDate = date.toLocaleDateString('en-US', {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        });
-      }
-      
-      modalMeta.innerHTML = `
-        <span class="show-tag ${episode.show === 'raw' ? 'raw-tag' : 'smackdown-tag'}">
-          ${episode.showName}
-        </span>
-        <span class="episode-number">Season ${episode.season_number}, Episode ${episode.episode_number}</span>
-        <div style="width: 100%">${formattedDate}</div>
-      `;
-      
-      if (episode.vote_average) {
-        const stars = '★'.repeat(Math.round(episode.vote_average / 2)) + 
-                      '☆'.repeat(5 - Math.round(episode.vote_average / 2));
-        modalRating.innerHTML = `
-          <div class="star-rating">${stars}</div>
-          <div>${episode.vote_average.toFixed(1)}/10 (${episode.vote_count} votes)</div>
-        `;
-      } else {
-        modalRating.innerHTML = '<div>No rating available</div>';
-      }
-      
-      modalDescription.textContent = episode.overview || 'No description available for this episode.';
-      
-      const videoUrl = getVideoUrl(
-        episode.showId,
-        episode.season_number,
-        episode.episode_number
-      );
-      
-      watchButton.onclick = () => {
-        const episodeId = getEpisodeId(episode);
-        saveWatchedEpisode(episodeId);
-        // open in a new tab safely
-        window.open(videoUrl, '_blank', 'noopener');
-        highlightWatchedEpisode(episodeId);
-      };
-      
-      modal.style.display = 'block';
-      modal.setAttribute('aria-hidden','false');
-      // move focus into modal
-      const modalContent = modal.querySelector('.modal-content');
-      modalContent.focus();
-      trapFocus(modalContent);
-    }
-    
-    // Function to show status message
-    function showStatus(message, isError = false) {
-      statusContainer.innerHTML = `<div class="${isError ? 'error-message' : 'status-message'}">${message}</div>`;
-    }
-    
-    // Function to get video URL for an episode
-    function getVideoUrl(showId, seasonNumber, episodeNumber) {
-      const imdbID = showId === RAW_ID ? RAW_IMDB_ID : SMACKDOWN_IMDB_ID;
-      return `https://multiembed.mov/?video_id=${imdbID}&s=${seasonNumber}&e=${episodeNumber}`;
-    }
-    
-    // Function to show loading spinner
-    function showLoadingSpinner() {
-      container.innerHTML = '<div class="spinner"></div>';
-    }
-    
-    // Main function to fetch and display episodes
-    async function fetchAndDisplayEpisodes() {
-      showLoadingSpinner();
-      statusContainer.innerHTML = '';
-      
-      const showFilter = showSelect.value;
-      const selectedYear = yearSelect.value;
-      
-      try {
-        let allEpisodes = [];
-        
-        if (showFilter === 'both' || showFilter === 'raw') {
-          showStatus('Fetching WWE Raw episodes...');
-          const rawEpisodes = await fetchEpisodesForShow(RAW_ID, 'Raw', selectedYear);
-          allEpisodes = [...allEpisodes, ...rawEpisodes];
-          showStatus(`Found ${rawEpisodes.length} Raw episodes for ${selectedYear}`);
-        }
-        
-        if (showFilter === 'both' || showFilter === 'smackdown') {
-          showStatus('Fetching WWE SmackDown episodes...');
-          const smackdownEpisodes = await fetchEpisodesForShow(SMACKDOWN_ID, 'SmackDown', selectedYear);
-          allEpisodes = [...allEpisodes, ...smackdownEpisodes];
-          showStatus(`Found ${allEpisodes.length} total episodes for ${selectedYear}`);
-        }
-        
-        const pastAndCurrentEpisodes = allEpisodes.filter(episode => {
-          return episode.air_date && episode.air_date <= TODAY_STRING;
-        });
-        
-        showStatus(`Showing ${pastAndCurrentEpisodes.length} episodes`);
-        
-        pastAndCurrentEpisodes.sort((a, b) => new Date(a.air_date) - new Date(b.air_date));
-        
-        const episodesByMonth = groupByMonth(pastAndCurrentEpisodes);
-        
-        displayEpisodesByMonth(episodesByMonth);
-        
-        setTimeout(() => {
-          statusContainer.innerHTML = '';
-        }, 3000);
-        
-      } catch (error) {
-        console.error('Error:', error);
-        showStatus(`Error fetching episodes: ${error.message}`, true);
-        container.innerHTML = '<div class="no-episodes">Could not load episodes. Please try again later.</div>';
-      }
-    }
-    
-    // Function to fetch episodes for a specific show in a given year
-    async function fetchEpisodesForShow(showId, showName, year) {
-      const showResponse = await fetch(`https://api.themoviedb.org/3/tv/${showId}?api_key=${API_KEY}`);
-      
-      if (!showResponse.ok) {
-        throw new Error(`Failed to fetch ${showName} details (Status: ${showResponse.status})`);
-      }
-      
-      const showData = await showResponse.json();
-      
-      let allEpisodes = [];
-      
-      const totalSeasons = showData.number_of_seasons || 0;
-      
-      for (let seasonNum = 1; seasonNum <= totalSeasons; seasonNum++) {
-        try {
-          const seasonResponse = await fetch(
-            `https://api.themoviedb.org/3/tv/${showId}/season/${seasonNum}?api_key=${API_KEY}`
-          );
-          
-          if (!seasonResponse.ok) {
-            console.warn(`Could not fetch season ${seasonNum} for ${showName} (Status: ${seasonResponse.status})`);
-            continue;
-          }
-          
-          const seasonData = await seasonResponse.json();
-          
-          const episodesInYear = seasonData.episodes.filter(
-            episode => episode.air_date && episode.air_date.startsWith(year)
-          );
-          
-          const enrichedEpisodes = await Promise.all(episodesInYear.map(async (episode) => {
-            try {
-              const episodeResponse = await fetch(
-                `https://api.themoviedb.org/3/tv/${showId}/season/${seasonNum}/episode/${episode.episode_number}?api_key=${API_KEY}`
+        <script src="apikey.js"></script>
+        <script src="nav.js"></script>
+        <script>
+            // Constants
+            const API_KEY = window.WWE_API_KEY;
+            const RAW_ID = 4656;
+            const SMACKDOWN_ID = 1549;
+            
+            const RAW_IMDB_ID = 'tt0185103';
+            const SMACKDOWN_IMDB_ID = 'tt0227972';
+            
+            const MONTHS = [
+              'January', 'February', 'March', 'April', 'May', 'June',
+              'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+            
+            const TODAY = new Date();
+            const TODAY_STRING = TODAY.toISOString().split('T')[0];
+            
+            document.getElementById('currentDate').textContent = TODAY.toLocaleDateString('en-US', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            });
+            
+            // DOM elements
+            const container = document.getElementById('episodesContainer');
+            const statusContainer = document.getElementById('statusContainer');
+            const showSelect = document.getElementById('showSelect');
+            const yearSelect = document.getElementById('yearSelect');
+            const modal = document.getElementById('episodeModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMeta = document.getElementById('modalMeta');
+            const modalRating = document.getElementById('modalRating');
+            const modalDescription = document.getElementById('modalDescription');
+            const watchButton = document.getElementById('watchButton');
+            const closeModalBtn = document.querySelector('.close-modal');
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+            const installDiagnostics = document.getElementById('installDiagnostics');
+            const installStatus = document.getElementById('installStatus');
+            
+            // Populate years
+            const currentYear = TODAY.getFullYear();
+            const startYear = 1993;
+            
+            for (let year = currentYear; year >= startYear; year--) {
+              const option = document.createElement('option');
+              option.value = year;
+              option.textContent = year;
+              yearSelect.appendChild(option);
+            }
+            
+            yearSelect.value = currentYear;
+            // Load persisted selection if present
+            const persistedShow = localStorage.getItem('wwe_show') || null;
+            const persistedYear = localStorage.getItem('wwe_year') || null;
+            if (persistedShow) showSelect.value = persistedShow;
+            if (persistedYear) yearSelect.value = persistedYear;
+            
+            showSelect.addEventListener('change', fetchAndDisplayEpisodes);
+            yearSelect.addEventListener('change', fetchAndDisplayEpisodes);
+            
+            // Persist selection to localStorage so calendar page can read it
+            showSelect.addEventListener('change', () => localStorage.setItem('wwe_show', showSelect.value));
+            yearSelect.addEventListener('change', () => localStorage.setItem('wwe_year', yearSelect.value));
+            
+            // Listen for storage events to stay in sync when user changes selection on another tab/page
+            window.addEventListener('storage', (e) => {
+              if (e.key === 'wwe_show' && e.newValue) {
+                showSelect.value = e.newValue;
+                fetchAndDisplayEpisodes();
+              }
+              if (e.key === 'wwe_year' && e.newValue) {
+                yearSelect.value = e.newValue;
+                fetchAndDisplayEpisodes();
+              }
+            });
+            
+            closeModalBtn.addEventListener('click', closeModal);
+            
+            function closeModal(){
+              modal.style.display = 'none';
+              modal.setAttribute('aria-hidden','true');
+              // return focus to the showSelect for context
+              showSelect.focus();
+            }
+            
+            window.addEventListener('click', (event) => {
+              if (event.target === modal) {
+                closeModal();
+              }
+            });
+            
+            // Keyboard: ESC to close modal
+            window.addEventListener('keydown', (e) => {
+              if (e.key === 'Escape' && modal.style.display === 'block') {
+                closeModal();
+              }
+            });
+            
+            // Function to get the unique episode ID
+            function getEpisodeId(episode) {
+              return `${episode.showId}-S${episode.season_number}-E${episode.episode_number}`;
+            }
+            
+            // Function to load the last watched episode from localStorage
+            function loadWatchedEpisode() {
+              return localStorage.getItem('lastWatchedEpisode');
+            }
+            
+            // Function to save the last watched episode to localStorage
+            function saveWatchedEpisode(episodeId) {
+              localStorage.setItem('lastWatchedEpisode', episodeId);
+            }
+            
+            // Function to highlight the watched episode
+            function highlightWatchedEpisode(episodeId) {
+              document.querySelectorAll('.episode-card.watched').forEach(card => {
+                card.classList.remove('watched');
+              });
+              const card = document.querySelector(`.episode-card[data-episode-id="${episodeId}"]`);
+              if (card) {
+                card.classList.add('watched');
+              }
+            }
+            
+            // Function to show episode details in modal
+            function showEpisodeDetails(episode) {
+              modalTitle.textContent = episode.name || 'Untitled Episode';
+              
+              let formattedDate = 'Air date unknown';
+              if (episode.air_date) {
+                const date = new Date(episode.air_date);
+                formattedDate = date.toLocaleDateString('en-US', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                });
+              }
+              
+              modalMeta.innerHTML = `
+                <span class="show-tag ${episode.show === 'raw' ? 'raw-tag' : 'smackdown-tag'}">
+                  ${episode.showName}
+                </span>
+                <span class="episode-number">Season ${episode.season_number}, Episode ${episode.episode_number}</span>
+                <div style="width: 100%">${formattedDate}</div>
+              `;
+              
+              if (episode.vote_average) {
+                const stars = '★'.repeat(Math.round(episode.vote_average / 2)) + 
+                              '☆'.repeat(5 - Math.round(episode.vote_average / 2));
+                modalRating.innerHTML = `
+                  <div class="star-rating">${stars}</div>
+                  <div>${episode.vote_average.toFixed(1)}/10 (${episode.vote_count} votes)</div>
+                `;
+              } else {
+                modalRating.innerHTML = '<div>No rating available</div>';
+              }
+              
+              modalDescription.textContent = episode.overview || 'No description available for this episode.';
+              
+              const videoUrl = getVideoUrl(
+                episode.showId,
+                episode.season_number,
+                episode.episode_number
               );
               
-              if (episodeResponse.ok) {
-                const detailedEpisode = await episodeResponse.json();
-                return {
-                  ...detailedEpisode,
-                  show: showId === RAW_ID ? 'raw' : 'smackdown',
-                  showName: showName,
-                  showId: showId
-                };
-              } else {
-                return {
-                  ...episode,
-                  show: showId === RAW_ID ? 'raw' : 'smackdown',
-                  showName: showName,
-                  showId: showId
-                };
-              }
-            } catch (err) {
-              console.warn(`Error fetching details for S${seasonNum}E${episode.episode_number}:`, err);
-              return {
-                ...episode,
-                show: showId === RAW_ID ? 'raw' : 'smackdown',
-                showName: showName,
-                showId: showId
+              watchButton.onclick = () => {
+                const episodeId = getEpisodeId(episode);
+                saveWatchedEpisode(episodeId);
+                // open in a new tab safely
+                window.open(videoUrl, '_blank', 'noopener');
+                highlightWatchedEpisode(episodeId);
               };
+              
+              modal.style.display = 'block';
+              modal.setAttribute('aria-hidden','false');
+              // move focus into modal
+              const modalContent = modal.querySelector('.modal-content');
+              modalContent.focus();
+              trapFocus(modalContent);
             }
-          }));
-          
-          allEpisodes = [...allEpisodes, ...enrichedEpisodes];
-        } catch (err) {
-          console.warn(`Error fetching season ${seasonNum} for ${showName}:`, err);
-        }
-      }
-      
-      return allEpisodes;
-    }
-    
-    // Function to group episodes by month
-    function groupByMonth(episodes) {
-      const grouped = {};
-      
-      episodes.forEach(episode => {
-        if (!episode.air_date) return;
-        
-        const dateParts = episode.air_date.split('-');
-        const year = dateParts[0];
-        const month = parseInt(dateParts[1]) - 1;
-        
-        const key = `${year}-${month}`;
-        
-        if (!grouped[key]) {
-          grouped[key] = {
-            year: parseInt(year),
-            month: month,
-            monthName: MONTHS[month],
-            episodes: []
-          };
-        }
-        
-        grouped[key].episodes.push(episode);
-      });
-      
-      return Object.values(grouped).sort((a, b) => b.month - a.month);
-    }
-    
-    // Function to display episodes grouped by month
-    function displayEpisodesByMonth(monthsData) {
-      container.innerHTML = '';
-      
-      if (monthsData.length === 0) {
-        container.innerHTML = '<div class="no-episodes">No episodes found for the selected criteria</div>';
-        return;
-      }
-      
-      monthsData.forEach(monthData => {
-        const monthContainer = document.createElement('div');
-        monthContainer.className = 'month-container';
-        
-        const monthHeader = document.createElement('div');
-        monthHeader.className = 'month-header';
-        monthHeader.textContent = `${monthData.monthName} ${monthData.year} (${monthData.episodes.length} episodes)`;
-        monthContainer.appendChild(monthHeader);
-        
-        const episodesGrid = document.createElement('div');
-        episodesGrid.className = 'episodes-grid';
-        
-        const sortedEpisodes = [...monthData.episodes].sort((a, b) => 
-          new Date(b.air_date) - new Date(a.air_date)
-        );
-        
-        sortedEpisodes.forEach(episode => {
-          const card = createEpisodeCard(episode);
-          episodesGrid.appendChild(card);
-        });
-        
-        monthContainer.appendChild(episodesGrid);
-        container.appendChild(monthContainer);
-      });
-      
-      const lastWatched = loadWatchedEpisode();
-      if (lastWatched) {
-        highlightWatchedEpisode(lastWatched);
-      }
-    }
-    
-    // Function to create episode card
-    function createEpisodeCard(episode) {
-      const card = document.createElement('div');
-      card.className = 'episode-card';
-  card.tabIndex = 0; // make focusable for keyboard users
-      
-      const episodeId = getEpisodeId(episode);
-      card.setAttribute('data-episode-id', episodeId);
-      
-      const videoUrl = getVideoUrl(
-        episode.showId,
-        episode.season_number,
-        episode.episode_number
-      );
-      
-      card.addEventListener('click', (event) => {
-        showEpisodeDetails(episode);
-        event.stopPropagation();
-      });
-      card.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          showEpisodeDetails(episode);
-        }
-      });
-      
-      let imageUrl = '/api/placeholder/300/160';
-      if (episode.still_path) {
-        imageUrl = `https://image.tmdb.org/t/p/w500${episode.still_path}`;
-      }
-      
-      let formattedDate = 'Air date unknown';
-      if (episode.air_date) {
-        const date = new Date(episode.air_date);
-        formattedDate = date.toLocaleDateString('en-US', {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        });
-      }
-      
-      let ratingDisplay = '';
-      if (episode.vote_average) {
-        ratingDisplay = `<span class="episode-rating">${episode.vote_average.toFixed(1)}/10</span>`;
-      }
-      
-      card.innerHTML = `
-        <div class="episode-image-container">
-          <img class="episode-image" src="${imageUrl}" alt="${episode.name}" onerror="this.src='blank.jpg'">
-          <div class="play-button"></div>
-        </div>
-        <div class="episode-details">
-          <div class="episode-title">${episode.name || 'Untitled Episode'}</div>
-          <div class="episode-date">${formattedDate}</div>
-          <div class="episode-description">${episode.overview || 'No description available.'}</div>
-          <div class="episode-footer">
-            <span class="show-tag ${episode.show === 'raw' ? 'raw-tag' : 'smackdown-tag'}">
-              ${episode.showName}
-            </span>
-            <span class="episode-number">S${episode.season_number} E${episode.episode_number}</span>
-            ${ratingDisplay}
-          </div>
-        </div>
-      `;
-      
-      const lastWatched = loadWatchedEpisode();
-      if (lastWatched === episodeId) {
-        card.classList.add('watched');
-      }
-      
-      return card;
-    }
-
-    // Simple focus trap for modal: keep focus inside modal content while open
-    function trapFocus(modalContent){
-      const focusable = modalContent.querySelectorAll('a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])');
-      if (!focusable.length) return;
-      const first = focusable[0];
-      const last = focusable[focusable.length -1];
-      function handleKey(e){
-        if (e.key !== 'Tab') return;
-        if (e.shiftKey && document.activeElement === first){
-          e.preventDefault(); last.focus();
-        } else if (!e.shiftKey && document.activeElement === last){
-          e.preventDefault(); first.focus();
-        }
-      }
-      modalContent.addEventListener('keydown', handleKey);
-      // cleanup when modal closes
-      const observer = new MutationObserver(()=>{
-        if (modal.getAttribute('aria-hidden') === 'true'){
-          modalContent.removeEventListener('keydown', handleKey);
-          observer.disconnect();
-        }
-      });
-      observer.observe(modal, {attributes:true,attributeFilter:['aria-hidden']});
-    }
-    
-    // Initial load
-    fetchAndDisplayEpisodes();
-
-    // PWA: Service Worker registration
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').catch(() => {});
-      });
-    }
-
-    // PWA: Install prompt for Chrome on Android
-    let deferredPrompt;
-    const installBtn = document.getElementById('pwaInstallBtn');
-    const installMsg = document.getElementById('installMsg');
-    installBtn.disabled = true;
-    installMsg.style.display = 'none';
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      console.log('beforeinstallprompt event fired');
-      e.preventDefault();
-      deferredPrompt = e;
-      installBtn.disabled = false;
-      installMsg.style.display = 'none';
-    });
-
-    installBtn.addEventListener('click', async () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-          installBtn.disabled = true;
-        }
-        deferredPrompt = null;
-      }
-    });
-
-    window.addEventListener('appinstalled', () => {
-      installBtn.disabled = true;
-      installMsg.style.display = 'none';
-    });
-  </script>
-</body>
+            
+            // Function to show status message
+            function showStatus(message, isError = false) {
+              statusContainer.innerHTML = `<div class="${isError ? 'error-message' : 'status-message'}">${message}</div>`;
+            }
+            
+            // Function to get video URL for an episode
+            function getVideoUrl(showId, seasonNumber, episodeNumber) {
+              const imdbID = showId === RAW_ID ? RAW_IMDB_ID : SMACKDOWN_IMDB_ID;
+              return `https://multiembed.mov/?video_id=${imdbID}&s=${seasonNumber}&e=${episodeNumber}`;
+            }
+            
+            // Function to show loading spinner
+            function showLoadingSpinner() {
+              container.innerHTML = '<div class="spinner"></div>';
+            }
+            
+            // Main function to fetch and display episodes
+            async function fetchAndDisplayEpisodes() {
+              showLoadingSpinner();
+              statusContainer.innerHTML = '';
+              
+              const showFilter = showSelect.value;
+              const selectedYear = yearSelect.value;
+              
+              try {
+                let allEpisodes = [];
+                
+                if (showFilter === 'both' || showFilter === 'raw') {
+                  showStatus('Fetching WWE Raw episodes...');
+                  const rawEpisodes = await fetchEpisodesForShow(RAW_ID, 'Raw', selectedYear);
+                  allEpisodes = [...allEpisodes, ...rawEpisodes];
+                  showStatus(`Found ${rawEpisodes.length} Raw episodes for ${selectedYear}`);
+                }
+                
+                if (showFilter === 'both' || showFilter === 'smackdown') {
+                  showStatus('Fetching WWE SmackDown episodes...');
+                  const smackdownEpisodes = await fetchEpisodesForShow(SMACKDOWN_ID, 'SmackDown', selectedYear);
+                  allEpisodes = [...allEpisodes, ...smackdownEpisodes];
+                  showStatus(`Found ${allEpisodes.length} total episodes for ${selectedYear}`);
+                }
+                
+                const pastAndCurrentEpisodes = allEpisodes.filter(episode => {
+                  return episode.air_date && episode.air_date <= TODAY_STRING;
+                });
+                
+                showStatus(`Showing ${pastAndCurrentEpisodes.length} episodes`);
+                
+                pastAndCurrentEpisodes.sort((a, b) => new Date(a.air_date) - new Date(b.air_date));
+                
+                const episodesByMonth = groupByMonth(pastAndCurrentEpisodes);
+                
+                displayEpisodesByMonth(episodesByMonth);
+                
+                setTimeout(() => {
+                  statusContainer.innerHTML = '';
+                }, 3000);
+                
+              } catch (error) {
+                console.error('Error:', error);
+                showStatus(`Error fetching episodes: ${error.message}`, true);
+                container.innerHTML = '<div class="no-episodes">Could not load episodes. Please try again later.</div>';
+              }
+            }
+            
+            // Function to fetch episodes for a specific show in a given year
+            async function fetchEpisodesForShow(showId, showName, year) {
+              const showResponse = await fetch(`https://api.themoviedb.org/3/tv/${showId}?api_key=${API_KEY}`);
+              
+              if (!showResponse.ok) {
+                throw new Error(`Failed to fetch ${showName} details (Status: ${showResponse.status})`);
+              }
+              
+              const showData = await showResponse.json();
+              
+              let allEpisodes = [];
+              
+              const totalSeasons = showData.number_of_seasons || 0;
+              
+              for (let seasonNum = 1; seasonNum <= totalSeasons; seasonNum++) {
+                try {
+                  const seasonResponse = await fetch(
+                    `https://api.themoviedb.org/3/tv/${showId}/season/${seasonNum}?api_key=${API_KEY}`
+                  );
+                  
+                  if (!seasonResponse.ok) {
+                    console.warn(`Could not fetch season ${seasonNum} for ${showName} (Status: ${seasonResponse.status})`);
+                    continue;
+                  }
+                  
+                  const seasonData = await seasonResponse.json();
+                  
+                  const episodesInYear = seasonData.episodes.filter(
+                    episode => episode.air_date && episode.air_date.startsWith(year)
+                  );
+                  
+                  const enrichedEpisodes = await Promise.all(episodesInYear.map(async (episode) => {
+                    try {
+                      const episodeResponse = await fetch(
+                        `https://api.themoviedb.org/3/tv/${showId}/season/${seasonNum}/episode/${episode.episode_number}?api_key=${API_KEY}`
+                      );
+                      
+                      if (episodeResponse.ok) {
+                        const detailedEpisode = await episodeResponse.json();
+                        return {
+                          ...detailedEpisode,
+                          show: showId === RAW_ID ? 'raw' : 'smackdown',
+                          showName: showName,
+                          showId: showId
+                        };
+                      } else {
+                        return {
+                          ...episode,
+                          show: showId === RAW_ID ? 'raw' : 'smackdown',
+                          showName: showName,
+                          showId: showId
+                        };
+                      }
+                    } catch (err) {
+                      console.warn(`Error fetching details for S${seasonNum}E${episode.episode_number}:`, err);
+                      return {
+                        ...episode,
+                        show: showId === RAW_ID ? 'raw' : 'smackdown',
+                        showName: showName,
+                        showId: showId
+                      };
+                    }
+                  }));
+                  
+                  allEpisodes = [...allEpisodes, ...enrichedEpisodes];
+                } catch (err) {
+                  console.warn(`Error fetching season ${seasonNum} for ${showName}:`, err);
+                }
+              }
+              
+              return allEpisodes;
+            }
+            
+            // Function to group episodes by month
+            function groupByMonth(episodes) {
+              const grouped = {};
+              
+              episodes.forEach(episode => {
+                if (!episode.air_date) return;
+                
+                const dateParts = episode.air_date.split('-');
+                const year = dateParts[0];
+                const month = parseInt(dateParts[1]) - 1;
+                
+                const key = `${year}-${month}`;
+                
+                if (!grouped[key]) {
+                  grouped[key] = {
+                    year: parseInt(year),
+                    month: month,
+                    monthName: MONTHS[month],
+                    episodes: []
+                  };
+                }
+                
+                grouped[key].episodes.push(episode);
+              });
+              
+              return Object.values(grouped).sort((a, b) => b.month - a.month);
+            }
+            
+            // Function to display episodes grouped by month
+            function displayEpisodesByMonth(monthsData) {
+              container.innerHTML = '';
+              
+              if (monthsData.length === 0) {
+                container.innerHTML = '<div class="no-episodes">No episodes found for the selected criteria</div>';
+                return;
+              }
+              
+              monthsData.forEach(monthData => {
+                const monthContainer = document.createElement('div');
+                monthContainer.className = 'month-container';
+                
+                const monthHeader = document.createElement('div');
+                monthHeader.className = 'month-header';
+                monthHeader.textContent = `${monthData.monthName} ${monthData.year} (${monthData.episodes.length} episodes)`;
+                monthContainer.appendChild(monthHeader);
+                
+                const episodesGrid = document.createElement('div');
+                episodesGrid.className = 'episodes-grid';
+                
+                const sortedEpisodes = [...monthData.episodes].sort((a, b) => 
+                  new Date(b.air_date) - new Date(a.air_date)
+                );
+                
+                sortedEpisodes.forEach(episode => {
+                  const card = createEpisodeCard(episode);
+                  episodesGrid.appendChild(card);
+                });
+                
+                monthContainer.appendChild(episodesGrid);
+                container.appendChild(monthContainer);
+              });
+              
+              const lastWatched = loadWatchedEpisode();
+              if (lastWatched) {
+                highlightWatchedEpisode(lastWatched);
+              }
+            }
+            
+            // Function to create episode card
+            function createEpisodeCard(episode) {
+              const card = document.createElement('div');
+              card.className = 'episode-card';
+            card.tabIndex = 0; // make focusable for keyboard users
+              
+              const episodeId = getEpisodeId(episode);
+              card.setAttribute('data-episode-id', episodeId);
+              
+              const videoUrl = getVideoUrl(
+                episode.showId,
+                episode.season_number,
+                episode.episode_number
+              );
+              
+              card.addEventListener('click', (event) => {
+                showEpisodeDetails(episode);
+                event.stopPropagation();
+              });
+              card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  showEpisodeDetails(episode);
+                }
+              });
+              
+              let imageUrl = '/api/placeholder/300/160';
+              if (episode.still_path) {
+                imageUrl = `https://image.tmdb.org/t/p/w500${episode.still_path}`;
+              }
+              
+              let formattedDate = 'Air date unknown';
+              if (episode.air_date) {
+                const date = new Date(episode.air_date);
+                formattedDate = date.toLocaleDateString('en-US', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                });
+              }
+              
+              let ratingDisplay = '';
+              if (episode.vote_average) {
+                ratingDisplay = `<span class="episode-rating">${episode.vote_average.toFixed(1)}/10</span>`;
+              }
+              
+              card.innerHTML = `
+                <div class="episode-image-container">
+                  <img class="episode-image" src="${imageUrl}" alt="${episode.name}" onerror="this.src='blank.jpg'">
+                  <div class="play-button"></div>
+                </div>
+                <div class="episode-details">
+                  <div class="episode-title">${episode.name || 'Untitled Episode'}</div>
+                  <div class="episode-date">${formattedDate}</div>
+                  <div class="episode-description">${episode.overview || 'No description available.'}</div>
+                  <div class="episode-footer">
+                    <span class="show-tag ${episode.show === 'raw' ? 'raw-tag' : 'smackdown-tag'}">
+                      ${episode.showName}
+                    </span>
+                    <span class="episode-number">S${episode.season_number} E${episode.episode_number}</span>
+                    ${ratingDisplay}
+                  </div>
+                </div>
+              `;
+              
+              const lastWatched = loadWatchedEpisode();
+              if (lastWatched === episodeId) {
+                card.classList.add('watched');
+              }
+              
+              return card;
+            }
+            
+            // Simple focus trap for modal: keep focus inside modal content while open
+            function trapFocus(modalContent){
+              const focusable = modalContent.querySelectorAll('a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])');
+              if (!focusable.length) return;
+              const first = focusable[0];
+              const last = focusable[focusable.length -1];
+              function handleKey(e){
+                if (e.key !== 'Tab') return;
+                if (e.shiftKey && document.activeElement === first){
+                  e.preventDefault(); last.focus();
+                } else if (!e.shiftKey && document.activeElement === last){
+                  e.preventDefault(); first.focus();
+                }
+              }
+              modalContent.addEventListener('keydown', handleKey);
+              // cleanup when modal closes
+              const observer = new MutationObserver(()=>{
+                if (modal.getAttribute('aria-hidden') === 'true'){
+                  modalContent.removeEventListener('keydown', handleKey);
+                  observer.disconnect();
+                }
+              });
+              observer.observe(modal, {attributes:true,attributeFilter:['aria-hidden']});
+            }
+            
+            // Initial load
+            fetchAndDisplayEpisodes();
+            
+            // PWA: Service Worker registration
+            if ('serviceWorker' in navigator) {
+              window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(() => {});
+              });
+            }
+            
+            // PWA: Install prompt for Chrome on Android
+            let deferredPrompt;
+            const installBtn = document.getElementById('pwaInstallBtn');
+            const installMsg = document.getElementById('installMsg');
+            installBtn.disabled = true;
+            installMsg.style.display = 'none';
+            
+            window.addEventListener('beforeinstallprompt', (e) => {
+              console.log('beforeinstallprompt event fired');
+              e.preventDefault();
+              deferredPrompt = e;
+              installBtn.disabled = false;
+              installMsg.style.display = 'none';
+            });
+            
+            installBtn.addEventListener('click', async () => {
+              if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                  installBtn.disabled = true;
+                }
+                deferredPrompt = null;
+              }
+            });
+            
+            window.addEventListener('appinstalled', () => {
+              installBtn.disabled = true;
+              installMsg.style.display = 'none';
+            });
+        </script>
+    </body>
 </html>
