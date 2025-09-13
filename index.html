@@ -11,132 +11,30 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#121212">
   
+  <link rel="stylesheet" href="nav.css">
   <style>
+    :root{--bg:#121212;--card:#2c2c2c;--muted:#aaa;--accent:#ff4747;--accent-2:#2196f3}
+    html,body{height:100%;}
     body {
       font-family: "Google Sans Text", sans-serif;
       max-width: 100%;
       margin: 0 auto;
       padding: 20px;
-      background-color: #121212;
+      background-color: var(--bg);
       color: #e0e0e0;
-      scrollbar-width: none;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
-    body::-webkit-scrollbar {
-      display: none;
-    }
-    /* Hide scrollbar for Edge/IE */
-    html, body {
-      -ms-overflow-style: none; /* IE and Edge */
-      overflow-y: scroll;
-    }
-    /* Hide scrollbar for all browsers using overlay */
-    html {
-      scrollbar-width: none;
-    }
+    /* Keep visible scrollbars for accessibility but make them subtle */
+    ::-webkit-scrollbar{width:10px;height:10px}
+    ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.06);border-radius:8px}
+    ::-webkit-scrollbar-track{background:transparent}
     h1 {
       text-align: center;
       color: #ff4747;
       margin-bottom: 30px;
     }
-    .controls {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 20px;
-      gap: 15px;
-      flex-wrap: wrap;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: #121212;
-      padding-top: 10px;
-      padding-bottom: 10px;
-      flex-direction: row;
-      align-items: center;
-    }
-    .controls-selectors,
-    .controls-icons {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-    }
-    @media (max-width: 600px) {
-      .controls {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 8px;
-      }
-      .controls-selectors,
-      .controls-icons {
-        width: 100%;
-        justify-content: center;
-      }
-      .controls-selectors {
-        margin-bottom: 8px;
-      }
-    }
-    .show-selection, .year-selection {
-      padding: 10px 20px;
-      border: 1px solid #555;
-      border-radius: 6px;
-      background-color: #1e1e1e;
-      color: #e0e0e0;
-      font-size: 16px;
-      transition: background-color 0.3s, border-color 0.3s;
-    }
-    .show-selection:hover, .year-selection:hover {
-      background-color: #2c2c2c;
-      border-color: #777;
-    }
-    .theme-toggle-btn {
-      background: #2c3e50;
-      color: #fff;
-      border: none;
-      border-radius: 50%;
-      width: 44px;
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 26px;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-      margin-left: 10px;
-      padding: 0;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-    }
-    .theme-toggle-btn:hover, .theme-toggle-btn:focus {
-      background: #3d5a80;
-      color: #ffe082;
-    }
-    .theme-toggle-btn .material-symbols-outlined {
-      font-size: 28px;
-      line-height: 1;
-      pointer-events: none;
-    }
-    .install-btn {
-      background: #2c3e50;
-      color: #fff;
-      border: none;
-      border-radius: 50%;
-      width: 44px;
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 26px;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-      margin-left: 10px;
-      padding: 0;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-      /* Always show, but disable if not available */
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .install-btn[disabled] {
-      opacity: 0.4;
-      pointer-events: none;
-    }
+  /* nav styles loaded from nav.css */
     .light-theme {
       background-color: #f5f5f5;
       color: #222;
@@ -163,23 +61,8 @@
       color: #1565c0;
       border-left: 4px solid #2196f3;
     }
-    .light-theme .theme-toggle-btn {
-      background: #e3eafc;
-      color: #1565c0;
-    }
-    .light-theme .theme-toggle-btn:hover, .light-theme .theme-toggle-btn:focus {
-      background: #bcd0ee;
-      color: #222;
-    }
-    .light-theme .install-btn {
-      background: #e3eafc;
-      color: #1565c0;
-    }
-    .light-theme .install-btn:hover, .light-theme .install-btn:focus {
-      background: #bcd0ee;
-      color: #222;
-    }
-    .spinner {
+  /* light-theme nav overrides moved to nav.css */
+  .spinner {
       border: 4px solid #444;
       border-top: 4px solid #ff4747;
       border-radius: 50%;
@@ -200,6 +83,7 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.3);
       overflow: hidden;
     }
+  /* nav utilities (moved to nav.css) */
     .month-header {
       background-color: #2c3e50;
       color: white;
@@ -371,58 +255,15 @@
       margin-left: 5px;
     }
     select {
-      appearance: none;
-      -webkit-appearance: none;
       -moz-appearance: none;
+      -webkit-appearance: none;
+      appearance: none;
       background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
       background-repeat: no-repeat;
       background-position: right 12px center;
       padding-right: 40px;
     }
-    .custom-select {
-      background-color: #2c3e50;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 8px 18px;
-      font-size: 16px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-      outline: none;
-      margin-right: 5px;
-      appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-      padding-right: 40px;
-      max-height: 44px; /* Limit height to a single row */
-      overflow-y: hidden; /* Hide vertical scrollbar */
-    }
-    /* Hide scrollbar for select in Webkit browsers */
-    .custom-select::-webkit-scrollbar {
-      display: none;
-    }
-    /* Hide scrollbar for select in Firefox */
-    .custom-select {
-      scrollbar-width: none;
-    }
-    .custom-select:hover, .custom-select:focus {
-      background-color: #3d5a80;
-      color: #ffe082;
-    }
-    .light-theme .custom-select {
-      background-color: #e3eafc;
-      color: #222;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-    }
-    .light-theme .custom-select:hover, .light-theme .custom-select:focus {
-      background-color: #bcd0ee;
-      color: #1565c0;
-    }
+  /* custom-select and nav-specific styles moved to nav.css */
     .controls select {
       border: none;
       background: none;
@@ -515,41 +356,51 @@
     .watch-button:hover {
       background-color: #c0392b;
     }
+  /* make important interactive elements obvious on focus */
+  .episode-card:focus {box-shadow:0 6px 18px rgba(0,0,0,0.45);transform:translateY(-3px)}
+  .episode-card{outline:none}
   </style>
 </head>
 <body>
   <h1>WWE Raw and SmackDown Episodes</h1>
-  
-  <div class="info-banner">
-    Showing episodes aired on or before today's date: <span id="currentDate"></span>
-  </div>
-  
-  <div class="controls">
-    <div class="controls-selectors">
-      <select class="show-selection custom-select" id="showSelect">
+
+  <!-- Shared top navigation (Home/Calendar, show filter, year, theme, install) -->
+  <nav class="controls top-nav" role="navigation" aria-label="Primary">
+    <div class="nav-left">
+      <a href="index.html" aria-label="Home" title="Home"><img src="WWE_Logo.svg" alt="WWE" class="nav-logo"></a>
+      <a href="calendar.html" id="calendarBtn" class="theme-toggle-btn" title="Open Calendar" aria-label="Open calendar">
+        <span class="material-symbols-outlined">calendar_month</span>
+      </a>
+    </div>
+
+    <div class="controls-selectors nav-right">
+      <label for="showSelect" class="sr-only">Show filter</label>
+      <select class="show-selection custom-select" id="showSelect" aria-label="Show filter">
         <option value="both">Both Shows</option>
         <option value="raw">RAW Only</option>
         <option value="smackdown">SmackDown Only</option>
       </select>
-      <select class="year-selection custom-select" id="yearSelect">
+
+      <label for="yearSelect" class="sr-only">Year</label>
+      <select class="year-selection custom-select" id="yearSelect" aria-label="Year selection">
         <!-- Will be populated with JavaScript -->
       </select>
-    </div>
-    <div class="controls-icons">
-      <a href="calendar.html" id="calendarBtn" class="theme-toggle-btn" title="Go to Movie Calendar" style="margin-left:0;">
-        <span class="material-symbols-outlined">calendar_month</span>
-      </a>
-      <button id="pwaInstallBtn" class="install-btn" title="Install App" disabled>
+
+      <button id="pwaInstallBtn" class="install-btn" title="Install App" disabled aria-hidden="true">
         <span class="material-symbols-outlined">download</span>
       </button>
       <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle light/dark theme">
         <span class="material-symbols-outlined" id="themeIcon">dark_mode</span>
       </button>
     </div>
+  </nav>
+
+  <div class="info-banner" role="status" aria-live="polite">
+    Showing episodes aired on or before today's date: <span id="currentDate"></span>
   </div>
-  <div id="installDiagnostics" style="text-align:center;color:#f44336;font-size:13px;margin-bottom:10px;display:none;"></div>
-  <div id="installStatus" style="text-align:center;color:#2196f3;font-size:13px;margin-bottom:10px;display:none;"></div>
-  <div id="installMsg" style="text-align:center;color:#ffc107;font-size:14px;margin-bottom:10px;display:none;"></div>
+  <div id="installDiagnostics" class="install-feedback" aria-hidden="true"></div>
+  <div id="installStatus" class="install-feedback" aria-hidden="true"></div>
+  <div id="installMsg" class="install-feedback" aria-hidden="true"></div>
   
   <div id="statusContainer"></div>
   <div id="episodesContainer">
@@ -557,11 +408,11 @@
   </div>
 
   <!-- Episode Detail Modal -->
-  <div id="episodeModal" class="episode-modal">
-    <div class="modal-content">
+  <div id="episodeModal" class="episode-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-content" tabindex="-1">
       <div class="modal-header">
         <h2 class="modal-title" id="modalTitle">Episode Title</h2>
-        <span class="close-modal">×</span>
+        <button class="close-modal" aria-label="Close episode details">×</button>
       </div>
       <div class="modal-body">
         <div class="modal-meta" id="modalMeta">
@@ -583,6 +434,7 @@
   </div>
 
   <script src="apikey.js"></script>
+  <script src="nav.js"></script>
   <script>
     // Constants
     const API_KEY = window.WWE_API_KEY;
@@ -617,26 +469,12 @@
     const modalMeta = document.getElementById('modalMeta');
     const modalRating = document.getElementById('modalRating');
     const modalDescription = document.getElementById('modalDescription');
-    const watchButton = document.getElementById('watchButton');
-    const closeModalBtn = document.querySelector('.close-modal');
-    const themeToggle = document.getElementById('themeToggle');
-    const themeIcon = document.getElementById('themeIcon');
-    const installDiagnostics = document.getElementById('installDiagnostics');
-    const installStatus = document.getElementById('installStatus');
-    
-    // Restore theme from localStorage
-    if (localStorage.getItem('theme') === 'light') {
-      document.body.classList.add('light-theme');
-      themeIcon.textContent = 'light_mode';
-    } else {
-      themeIcon.textContent = 'dark_mode';
-    }
-    themeToggle.addEventListener('click', () => {
-      document.body.classList.toggle('light-theme');
-      const isLight = document.body.classList.contains('light-theme');
-      localStorage.setItem('theme', isLight ? 'light' : 'dark');
-      themeIcon.textContent = isLight ? 'light_mode' : 'dark_mode';
-    });
+  const watchButton = document.getElementById('watchButton');
+  const closeModalBtn = document.querySelector('.close-modal');
+  const themeToggle = document.getElementById('themeToggle');
+  const themeIcon = document.getElementById('themeIcon');
+  const installDiagnostics = document.getElementById('installDiagnostics');
+  const installStatus = document.getElementById('installStatus');
     
     // Populate years
     const currentYear = TODAY.getFullYear();
@@ -650,17 +488,50 @@
     }
     
     yearSelect.value = currentYear;
+  // Load persisted selection if present
+  const persistedShow = localStorage.getItem('wwe_show') || null;
+  const persistedYear = localStorage.getItem('wwe_year') || null;
+  if (persistedShow) showSelect.value = persistedShow;
+  if (persistedYear) yearSelect.value = persistedYear;
     
     showSelect.addEventListener('change', fetchAndDisplayEpisodes);
     yearSelect.addEventListener('change', fetchAndDisplayEpisodes);
-    
-    closeModalBtn.addEventListener('click', () => {
-      modal.style.display = 'none';
+
+  // Persist selection to localStorage so calendar page can read it
+  showSelect.addEventListener('change', () => localStorage.setItem('wwe_show', showSelect.value));
+  yearSelect.addEventListener('change', () => localStorage.setItem('wwe_year', yearSelect.value));
+
+    // Listen for storage events to stay in sync when user changes selection on another tab/page
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'wwe_show' && e.newValue) {
+        showSelect.value = e.newValue;
+        fetchAndDisplayEpisodes();
+      }
+      if (e.key === 'wwe_year' && e.newValue) {
+        yearSelect.value = e.newValue;
+        fetchAndDisplayEpisodes();
+      }
     });
+    
+    closeModalBtn.addEventListener('click', closeModal);
+
+    function closeModal(){
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden','true');
+      // return focus to the showSelect for context
+      showSelect.focus();
+    }
     
     window.addEventListener('click', (event) => {
       if (event.target === modal) {
-        modal.style.display = 'none';
+        closeModal();
+      }
+    });
+
+    // Keyboard: ESC to close modal
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.style.display === 'block') {
+        closeModal();
       }
     });
     
@@ -735,11 +606,17 @@
       watchButton.onclick = () => {
         const episodeId = getEpisodeId(episode);
         saveWatchedEpisode(episodeId);
-        window.open(videoUrl, '_self'); // open in same tab
+        // open in a new tab safely
+        window.open(videoUrl, '_blank', 'noopener');
         highlightWatchedEpisode(episodeId);
       };
       
       modal.style.display = 'block';
+      modal.setAttribute('aria-hidden','false');
+      // move focus into modal
+      const modalContent = modal.querySelector('.modal-content');
+      modalContent.focus();
+      trapFocus(modalContent);
     }
     
     // Function to show status message
@@ -951,6 +828,7 @@
     function createEpisodeCard(episode) {
       const card = document.createElement('div');
       card.className = 'episode-card';
+  card.tabIndex = 0; // make focusable for keyboard users
       
       const episodeId = getEpisodeId(episode);
       card.setAttribute('data-episode-id', episodeId);
@@ -964,6 +842,12 @@
       card.addEventListener('click', (event) => {
         showEpisodeDetails(episode);
         event.stopPropagation();
+      });
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          showEpisodeDetails(episode);
+        }
       });
       
       let imageUrl = '/api/placeholder/300/160';
@@ -1012,6 +896,31 @@
       }
       
       return card;
+    }
+
+    // Simple focus trap for modal: keep focus inside modal content while open
+    function trapFocus(modalContent){
+      const focusable = modalContent.querySelectorAll('a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])');
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length -1];
+      function handleKey(e){
+        if (e.key !== 'Tab') return;
+        if (e.shiftKey && document.activeElement === first){
+          e.preventDefault(); last.focus();
+        } else if (!e.shiftKey && document.activeElement === last){
+          e.preventDefault(); first.focus();
+        }
+      }
+      modalContent.addEventListener('keydown', handleKey);
+      // cleanup when modal closes
+      const observer = new MutationObserver(()=>{
+        if (modal.getAttribute('aria-hidden') === 'true'){
+          modalContent.removeEventListener('keydown', handleKey);
+          observer.disconnect();
+        }
+      });
+      observer.observe(modal, {attributes:true,attributeFilter:['aria-hidden']});
     }
     
     // Initial load

@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Text:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   
+    <link rel="stylesheet" href="nav.css">
     <style>
         body {
             font-family: "Google Sans Text", sans-serif;
@@ -16,22 +17,18 @@
             padding: 20px;
             background-color: #1a1a1a;
             color: #e0e0e0;
-            scrollbar-width: none;
         }
-        body::-webkit-scrollbar {
-            display: none;
-        }
-        html, body {
-            -ms-overflow-style: none;
-            overflow-y: scroll;
-        }
-        html {
-            scrollbar-width: none;
-        }
+        /* subtle visible scrollbar for parity with index */
+        ::-webkit-scrollbar{width:10px;height:10px}
+        ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.06);border-radius:8px}
+        ::-webkit-scrollbar-track{background:transparent}
+        html, body { overflow-y: auto; }
         
+        :root{--bg:#121212;--card:#2c2c2c;--muted:#aaa;--accent:#ff4747;--accent-2:#2196f3}
+        html,body{height:100%;}
         h1 {
             text-align: center;
-            color: #4a90e2;
+            color: #ff4747;
             margin-bottom: 30px;
         }
         
@@ -45,6 +42,8 @@
             max-width: 100%;
             margin: 0 auto;
         }
+
+    /* nav utilities are loaded from nav.css */
         
         .year-header {
             display: flex;
@@ -71,7 +70,6 @@
             border-radius: 5px;
             cursor: pointer;
             /* Hide scrollbar for dropdown (Webkit/Blink) */
-            scrollbar-width: none; /* Firefox */
             -ms-overflow-style: none; /* IE 10+ */
             max-height: 40px; /* Prevents dropdown from being too tall */
             overflow-y: auto;
@@ -354,32 +352,7 @@
             background-color: #3d5a80;
             color: #ffe082;
         }
-        #theme-toggle.theme-toggle-btn {
-            background: #2c3e50;
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            width: 44px;
-            height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            cursor: pointer;
-            transition: background 0.2s, color 0.2s;
-            margin-left: 10px;
-            padding: 0;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-        }
-        #theme-toggle.theme-toggle-btn:hover, #theme-toggle.theme-toggle-btn:focus {
-            background: #3d5a80;
-            color: #ffe082;
-        }
-        #theme-toggle .material-symbols-outlined {
-            font-size: 28px;
-            line-height: 1;
-            pointer-events: none;
-        }
+    /* themeToggle styles moved to nav.css; keep calendar-specific light-theme overrides below */
         .light-theme {
             background-color: #f5f5f5;
             color: #222;
@@ -407,14 +380,7 @@
             background-color: #bcd0ee;
             color: #1565c0;
         }
-        .light-theme #theme-toggle.theme-toggle-btn {
-            background: #e3eafc;
-            color: #1565c0;
-        }
-        .light-theme #theme-toggle.theme-toggle-btn:hover, #theme-toggle.theme-toggle-btn:focus {
-            background: #bcd0ee;
-            color: #222;
-        }
+    /* light-theme themeToggle override moved to nav.css */
         .light-theme .has-events {
             background-color: #ffe0e0;
         }
@@ -442,24 +408,39 @@
 <body>
     <div class="container">
         <h1>WWE Calendar</h1>
-        
-        <div class="year-header">
-            <div class="year-nav">
-                <select id="year-dropdown"></select>
+
+        <!-- Shared top navigation (same structure as index) -->
+        <nav class="controls top-nav" role="navigation" aria-label="Primary">
+            <div class="nav-left">
+                <a href="index.html" aria-label="Home" title="Home"><img src="WWE_Logo.svg" alt="WWE" class="nav-logo"></a>
+                <a href="index.html" class="theme-toggle-btn" title="Open Episodes" aria-label="Open episodes"><span class="material-symbols-outlined">home</span></a>
             </div>
-            <button id="current-year-btn" class="custom-btn">Current Year</button>
-            <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle light/dark theme">
-                <span class="material-symbols-outlined" id="themeIcon">dark_mode</span>
-            </button>
-        </div>
-        
-        <div class="months-grid" id="months-grid">
+            <div class="controls-selectors nav-right">
+                <label for="showSelect" class="sr-only">Show filter</label>
+                <select id="showSelect" class="show-selection custom-select" aria-label="Show filter">
+                    <option value="both">Both Shows</option>
+                    <option value="raw">RAW Only</option>
+                    <option value="smackdown">SmackDown Only</option>
+                </select>
+                <label for="yearSelect" class="sr-only">Year</label>
+                <select id="yearSelect" class="year-selection custom-select" aria-label="Year selection"></select>
+                <button id="current-year-btn" class="custom-btn">Current Year</button>
+                <button id="pwaInstallBtn" class="install-btn" title="Install App" disabled aria-hidden="true">
+                    <span class="material-symbols-outlined">download</span>
+                </button>
+                <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle light/dark theme">
+                    <span class="material-symbols-outlined" id="themeIcon">dark_mode</span>
+                </button>
+            </div>
+        </nav>
+
+        <div class="months-grid" id="months-grid" role="region" aria-label="Year calendar">
             <div class="loading">Loading WWE movies...</div>
         </div>
     </div>
     
     <div class="backdrop" id="backdrop"></div>
-    <div class="movie-details" id="movie-details">
+    <div class="movie-details" id="movie-details" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="detail-title">
         <div class="movie-header">
             <h2 id="detail-title">Movie Title</h2>
             <button class="close-btn" id="close-detail">×</button>
@@ -470,6 +451,7 @@
     </div>
     
     <script src="apikey.js"></script>
+    <script src="nav.js"></script>
     <script>
         // Configuration
         const API_KEY = window.WWE_API_KEY;
@@ -485,12 +467,13 @@
         let availableYears = [];
         let displayYear = new Date().getFullYear();
         
-        // DOM elements
-        const monthsGrid = document.getElementById('months-grid');
-        const yearDropdown = document.getElementById('year-dropdown');
-        const themeToggle = document.getElementById('theme-toggle');
-        const themeIcon = document.getElementById('themeIcon');
-        const currentYearButton = document.getElementById('current-year-btn');
+    // DOM elements
+    const monthsGrid = document.getElementById('months-grid');
+    // Use the shared top navigation year select as the canonical control
+    const yearDropdown = document.getElementById('yearSelect') || document.getElementById('year-dropdown');
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const currentYearButton = document.getElementById('current-year-btn');
         const movieDetails = document.getElementById('movie-details');
         const backdrop = document.getElementById('backdrop');
         const closeDetailButton = document.getElementById('close-detail');
@@ -498,24 +481,54 @@
         const detailTitle = document.getElementById('detail-title');
         
         // Event listeners
+    if (yearDropdown) {
         yearDropdown.addEventListener('change', () => {
-            displayYear = parseInt(yearDropdown.value, 10);
+            displayYear = parseInt(yearDropdown.value, 10) || displayYear;
             renderYearCalendar();
         });
-        
-        // Restore theme from localStorage
-        if (localStorage.getItem('theme') === 'light') {
-            document.body.classList.add('light-theme');
-            themeIcon.textContent = 'light_mode';
-        } else {
-            themeIcon.textContent = 'dark_mode';
+    }
+
+        // Top nav selects (shared)
+        const showSelect = document.getElementById('showSelect');
+        const yearSelect = document.getElementById('yearSelect');
+        // Populate will set yearSelect later; load persisted selections if present
+        if (localStorage.getItem('wwe_show')) {
+            showSelect.value = localStorage.getItem('wwe_show');
         }
-        themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('light-theme');
-            const isLight = document.body.classList.contains('light-theme');
-            localStorage.setItem('theme', isLight ? 'light' : 'dark');
-            themeIcon.textContent = isLight ? 'light_mode' : 'dark_mode';
-            updateSplitBackgroundsForTheme();
+        if (localStorage.getItem('wwe_year')) {
+            const vy = localStorage.getItem('wwe_year');
+            displayYear = parseInt(vy,10) || displayYear;
+        }
+
+        // Persist when top controls change and re-render
+        showSelect.addEventListener('change', () => {
+            localStorage.setItem('wwe_show', showSelect.value);
+            renderYearCalendar();
+        });
+        yearSelect.addEventListener('change', () => {
+            localStorage.setItem('wwe_year', yearSelect.value);
+            displayYear = parseInt(yearSelect.value,10) || displayYear;
+            renderYearCalendar();
+        });
+
+        // stay in sync if selections change in another tab
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'wwe_show' && e.newValue) {
+                if (showSelect) showSelect.value = e.newValue;
+                renderYearCalendar();
+            }
+            if (e.key === 'wwe_year' && e.newValue) {
+                if (yearSelect) yearSelect.value = e.newValue;
+                displayYear = parseInt(e.newValue,10) || displayYear;
+                renderYearCalendar();
+            }
+        });
+        
+        // Page-specific theme updates: listen for storage changes and refresh split backgrounds
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'theme') {
+                if (typeof updateSplitBackgroundsForTheme === 'function') updateSplitBackgroundsForTheme();
+            }
         });
         
         currentYearButton.addEventListener('click', () => {
@@ -620,6 +633,8 @@
         }
 
         function populateYearDropdown() {
+            // Fill the canonical year select (yearDropdown may reference yearSelect)
+            if (!yearDropdown) return;
             yearDropdown.innerHTML = '';
             availableYears.forEach(year => {
                 const opt = document.createElement('option');
@@ -627,7 +642,14 @@
                 opt.textContent = year;
                 yearDropdown.appendChild(opt);
             });
-            yearDropdown.value = displayYear;
+            // Prefer a persisted year if present
+            const persisted = localStorage.getItem('wwe_year');
+            if (persisted && availableYears.includes(parseInt(persisted,10))) {
+                yearDropdown.value = persisted;
+                displayYear = parseInt(persisted,10) || displayYear;
+            } else {
+                yearDropdown.value = displayYear;
+            }
         }
         
         function renderYearCalendar() {
@@ -701,11 +723,18 @@
                         return releaseDate.getDate() === day && releaseDate.getMonth() === month;
                     });
 
-                    // Episodes
-                    const episodesOnDay = currentYearEpisodes.filter(ep => {
-                        const airDate = new Date(ep.air_date);
-                        return airDate.getDate() === day && airDate.getMonth() === month;
-                    });
+                        // Episodes (apply show filter from top nav or persisted selection)
+                        const showFilter = (document.getElementById('showSelect') && document.getElementById('showSelect').value)
+                            || localStorage.getItem('wwe_show') || 'both';
+                        const episodesOnDay = currentYearEpisodes.filter(ep => {
+                            const airDate = new Date(ep.air_date);
+                            const matchesDate = airDate.getDate() === day && airDate.getMonth() === month;
+                            if (!matchesDate) return false;
+                            if (showFilter === 'both') return true;
+                            if (showFilter === 'raw') return ep.showName === 'RAW';
+                            if (showFilter === 'smackdown') return ep.showName === 'SmackDown';
+                            return true;
+                        });
 
                     // --- Add RAW/SmackDown/Movie background color ---
                     // SPLIT background if both movie and episode exist
@@ -848,8 +877,11 @@
 
             monthsGrid.querySelectorAll('.day-cell.has-events').forEach(cell => {
                 cell.tabIndex = 0;
+                cell.setAttribute('role','button');
+                cell.setAttribute('aria-expanded','false');
                 cell.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
                         cell.click();
                     }
                     if (e.key === 'Escape') {
@@ -912,7 +944,7 @@
                     const imdbID = movieData.external_ids.imdb_id;
                     detailsHTML += `
                         <br>
-                        <a href="https://multiembed.mov/?video_id=${imdbID}" style="display:inline-block;margin-top:10px;padding:8px 18px;background:#2c3e50;color:#fff;border-radius:6px;text-decoration:none;font-weight:500;box-shadow:0 2px 6px rgba(0,0,0,0.12);transition:background 0.2s;">&#9654; Watch Now</a>
+                        <a href="https://multiembed.mov/?video_id=${imdbID}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:10px;padding:8px 18px;background:#2c3e50;color:#fff;border-radius:6px;text-decoration:none;font-weight:500;box-shadow:0 2px 6px rgba(0,0,0,0.12);transition:background 0.2s;">&#9654; Watch Now</a>
                     `;
                 }
                 
@@ -946,8 +978,8 @@
                     </div>
                     <div style="clear: both;"></div>
                     <p><strong>Overview:</strong> ${epData.overview || 'No overview available.'}</p>
-                    <br>
-                    <a href="https://multiembed.mov/?video_id=${episode.imdbId}&s=${episode.season_number}&e=${episode.episode_number}" target="_blank" style="display:inline-block;margin-top:10px;padding:8px 18px;background:#2196f3;color:#fff;border-radius:6px;text-decoration:none;font-weight:500;box-shadow:0 2px 6px rgba(0,0,0,0.12);transition:background 0.2s;">&#9654; Watch Episode</a>
+            <br>
+            <a href="https://multiembed.mov/?video_id=${episode.imdbId}&s=${episode.season_number}&e=${episode.episode_number}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:10px;padding:8px 18px;background:#2196f3;color:#fff;border-radius:6px;text-decoration:none;font-weight:500;box-shadow:0 2px 6px rgba(0,0,0,0.12);transition:background 0.2s;">&#9654; Watch Episode</a>
                 `;
                 movieContent.innerHTML = detailsHTML;
             } catch (error) {
@@ -956,8 +988,11 @@
         }
 
         function closeMovieDetails() {
-            backdrop.style.display = 'none';
-            movieDetails.style.display = 'none';
+        backdrop.style.display = 'none';
+        movieDetails.style.display = 'none';
+        movieDetails.setAttribute('aria-hidden','true');
+        // return focus to yearDropdown
+        yearDropdown.focus();
         }
         
         function showLoadingSpinner() {
